@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
-@Disabled
+@TeleOp(name="Tele Op Alpha 1.0", group="Linear Opmode")
 public class TeamBTeleOp extends LinearOpMode {
 
     // Declare OpMode members.
@@ -66,20 +65,11 @@ public class TeamBTeleOp extends LinearOpMode {
             leftPower  = -gamepad1.left_stick_y;
             rightPower = -gamepad1.right_stick_y;
 
-
-            if (leftPower < 0 && rightPower < 0) { //Sets the front motors to 0 because of the omni wheels
-                FleftDrive.setPower(0);
-                FrightDrive.setPower(0);
-                BleftDrive.setPower(leftPower);
-                BrightDrive.setPower(rightPower);
-            }
-            else {
                 // Send calculated power to wheels
                 FleftDrive.setPower(leftPower);
                 FrightDrive.setPower(rightPower);
                 BleftDrive.setPower(leftPower);
                 BrightDrive.setPower(rightPower);
-            }
 
 
             // Show the elapsed game time and wheel power.
