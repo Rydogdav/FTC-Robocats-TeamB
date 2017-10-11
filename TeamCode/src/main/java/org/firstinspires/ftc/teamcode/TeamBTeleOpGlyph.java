@@ -4,16 +4,22 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Tele Op Alpha 1.0", group="Linear Opmode")
-public class TeamBTeleOp extends LinearOpMode {
+@TeleOp(name="Tele Op Glyph Alpha 1.0", group="Linear Opmode")
+public class TeamBTeleOpGlyph extends LinearOpMode {
 
     // Declare OpMode members.
     public ElapsedTime runtime = new ElapsedTime();
     public DcMotor motorLeft = null;
     public DcMotor motorRight = null;
+    public DcMotor glyphMotor1 = null;
+    public DcMotor glyphMotor2 = null;
+    public DcMotor glyphMotor3 = null;
+    public DcMotor glyphMotor4 = null;
+    public boolean bPressed = false;
     
 
     @Override
@@ -24,14 +30,22 @@ public class TeamBTeleOp extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        motorLeft = hardwareMap.get(DcMotor.class, "motorRight");
-        motorRight = hardwareMap.get(DcMotor.class, "motorLeft");
+        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
+        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
+        glyphMotor1 = hardwareMap.get(DcMotor.class, "glyphMotor1");
+        glyphMotor2 = hardwareMap.get(DcMotor.class, "glyphMotor2");
+        glyphMotor3 = hardwareMap.get(DcMotor.class, "glyphMotor3");
+        glyphMotor4 = hardwareMap.get(DcMotor.class, "glyphMotor4");
 
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         motorLeft.setDirection(DcMotor.Direction.FORWARD);
         motorRight.setDirection(DcMotor.Direction.REVERSE);
+        glyphMotor1.setDirection(DcMotor.Direction.FORWARD);
+        glyphMotor2.setDirection(DcMotor.Direction.FORWARD);
+        glyphMotor3.setDirection(DcMotor.Direction.FORWARD);
+        glyphMotor4.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -62,6 +76,16 @@ public class TeamBTeleOp extends LinearOpMode {
                 // Send calculated power to wheels
                 motorLeft.setPower(leftPower);
                 motorRight.setPower(rightPower);
+
+            if (gamepad1.b) { //Makes a boolean statement for if b is pressed
+                bPressed = true;
+            }
+            while (bPressed == true) {
+                glyphMotor1.setPower(1.0);
+                glyphMotor2 .setPower(1.0);
+                glyphMotor3.setPower(1.0);
+                glyphMotor4.setPower(1.0);
+            }
 
 
             // Show the elapsed game time and wheel power.
