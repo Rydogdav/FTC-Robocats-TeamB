@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 /**
  * Created by FTC Robotics on 10/3/2017.
@@ -31,6 +31,8 @@ public class TeamBAutonomous extends LinearOpMode {
     public Servo colorServo = null;
     public double servoDegrees;
     public double servoEquation = 1/255 * servoDegrees;
+    public double jewelInches;
+    public double jewelEquation = jewelInches / 2.54;
     public boolean redTeam;
     public boolean blueTeam;
     public boolean confirmation = false;
@@ -64,7 +66,7 @@ public class TeamBAutonomous extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        while (confirmation == false) {
+        while (confirmation == false) { //Locks in the alliance that we are on
             telemetry.addData("Press B for Red Alliance\nPress X for Blue Alliance", decision);
             if (gamepad1.b) {
                 decision = "Red";
@@ -84,7 +86,7 @@ public class TeamBAutonomous extends LinearOpMode {
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout*/
 
-        jewelDrive(90);
+        //jewelDrive(100, 10);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -97,6 +99,7 @@ public class TeamBAutonomous extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
+    //**ENCODER DRIVE**
     public void encoderDrive(double speed, double leftInches, double rightInches, double time) {
         int motorLeftTarget;
         int motorRightTarget;
@@ -144,21 +147,22 @@ public class TeamBAutonomous extends LinearOpMode {
 
             //  sleep(250);   // optional pause after each move
         }
-    }
+    } //**ENCODER DRIVE**
 
-    public void jewelDrive(double servoDegrees) {  //Color values?
-        colorServo.setPosition(servoEquation);
-        if (redTeam == true && colorSensor.red() <= 2) {
-            encoderDrive(DRIVE_SPEED,  -48,  -48, 1.0);
+    //**JEWEL DRIVE**
+    public void jewelDrive(double servoDegrees, double jewelInches) {  //Creates method named jewelDrive
+        colorServo.setPosition(servoEquation); //Takes argument(servoDegrees) and inputs it into the servo equation(1/255 * ser)
+        if (redTeam == true && colorSensor.red() <= 2) { //If we're on the red team & jewel = red, move back
+            encoderDrive(DRIVE_SPEED,  -jewelEquation,  -jewelEquation, 1.0);
         }
-        if (redTeam == true && colorSensor.blue() <= 2) {
-            encoderDrive(DRIVE_SPEED,  48,  48, 1.0);
+        if (redTeam == true && colorSensor.blue() <= 2) { //If we're on the red team & jewel = blue, move forward
+            encoderDrive(DRIVE_SPEED,  jewelEquation,  jewelEquation, 1.0);
         }
-        if (blueTeam == true && colorSensor.red() <= 2) {
-            encoderDrive(DRIVE_SPEED,  48,  48, 1.0);
+        if (blueTeam == true && colorSensor.red() <= 2) { //If we're on the blue team & jewel = red, move forward
+            encoderDrive(DRIVE_SPEED,  jewelEquation,  jewelEquation, 1.0);
         }
-        if (blueTeam == true && colorSensor.blue() <= 2) {
-            encoderDrive(DRIVE_SPEED,  -48,  -48, 1.0);
+        if (blueTeam == true && colorSensor.blue() <= 2) { //If we're on the blue team & jewel = blue, move back
+            encoderDrive(DRIVE_SPEED,  -jewelEquation,  -jewelEquation, 1.0);
         }
-    }
+    } //**JEWEL DRIVE**
 }
