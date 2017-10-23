@@ -86,7 +86,7 @@ public class TeamBAutonomous extends LinearOpMode {
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout*/
 
-        //jewelDrive(100, 10);
+        jewelDrive(100, 10);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }

@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import java.sql.Time;
+
 @TeleOp(name="Tele Op Glyph Alpha 1.1", group="Linear Opmode")
 public class TeamBTeleOpGlyph extends LinearOpMode {
 
@@ -84,14 +86,15 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             }
 
             if (gamepad1.b) {
+                sleep(500);
                 bPressed *= -1;
             }
 
-            if (gamepad1.left_trigger > 0.1 && bPressed > 0) { //Makes a boolean statement for if b is pressed, Boolean is true or false
+            if (gamepad1.a && bPressed > 0) { //Makes a boolean statement for if b is pressed, Boolean is true or false
                 motorGlyph1.setPower(-1.0);
                 motorGlyph2.setPower(1.0);
             }
-            else if (gamepad1.left_trigger > 0.1 && bPressed < 0) {
+            else if (gamepad1.a && bPressed < 0) {
                 motorGlyph1.setPower(1.0);
                 motorGlyph2.setPower(-1.0);
             }
@@ -99,11 +102,11 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
                 motorGlyph1.setPower(0.0);
                 motorGlyph2.setPower(0.0);
             }
-            if (gamepad1.right_trigger > 0.1 && bPressed > 0) {
+            if (gamepad1.x && bPressed > 0) {
                 motorGlyph3.setPower(-1.0);
                 motorGlyph4.setPower(-1.0);
             }
-            else if (gamepad1.right_trigger > 0.1 && bPressed < 0) {
+            else if (gamepad1.x && bPressed < 0) {
                 motorGlyph3.setPower(1.0);
                 motorGlyph4.setPower(1.0);
             }
