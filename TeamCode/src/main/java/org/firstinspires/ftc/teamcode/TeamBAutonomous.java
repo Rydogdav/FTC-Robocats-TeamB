@@ -70,11 +70,13 @@ public class TeamBAutonomous extends LinearOpMode {
             telemetry.addData("Press B for Red Alliance\nPress X for Blue Alliance", decision);
             if (gamepad1.b) {
                 decision = "Red";
+                telemetry.addLine("Alliance Red");
                 redTeam = true;
                 confirmation = true;
             }
             if (gamepad1.x) {
                 decision = "Blue";
+                telemetry.addLine("Alliance Blue");
                 blueTeam = true;
                 confirmation = true;
             }
@@ -86,7 +88,7 @@ public class TeamBAutonomous extends LinearOpMode {
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout*/
 
-        jewelDrive(100, 10);
+        jewelDrive(90, 10);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -153,16 +155,16 @@ public class TeamBAutonomous extends LinearOpMode {
     public void jewelDrive(double servoDegrees, double jewelInches) {  //Creates method named jewelDrive
         colorServo.setPosition(servoEquation); //Takes argument(servoDegrees) and inputs it into the servo equation(1/255 * ser)
         if (redTeam == true && colorSensor.red() <= 2) { //If we're on the red team & jewel = red, move back
-            encoderDrive(DRIVE_SPEED,  -jewelEquation,  -jewelEquation, 1.0);
+            encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
         }
         if (redTeam == true && colorSensor.blue() <= 2) { //If we're on the red team & jewel = blue, move forward
-            encoderDrive(DRIVE_SPEED,  jewelEquation,  jewelEquation, 1.0);
+            encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
         }
         if (blueTeam == true && colorSensor.red() <= 2) { //If we're on the blue team & jewel = red, move forward
-            encoderDrive(DRIVE_SPEED,  jewelEquation,  jewelEquation, 1.0);
+            encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
         }
         if (blueTeam == true && colorSensor.blue() <= 2) { //If we're on the blue team & jewel = blue, move back
-            encoderDrive(DRIVE_SPEED,  -jewelEquation,  -jewelEquation, 1.0);
+            encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
         }
     } //**JEWEL DRIVE**
 }

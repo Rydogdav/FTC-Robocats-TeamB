@@ -90,31 +90,35 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
                 bPressed *= -1;
             }
 
-            if (gamepad1.a && bPressed > 0) { //Makes a boolean statement for if b is pressed, Boolean is true or false
-                motorGlyph1.setPower(-1.0);
-                motorGlyph2.setPower(1.0);
-            }
-            else if (gamepad1.a && bPressed < 0) {
-                motorGlyph1.setPower(1.0);
-                motorGlyph2.setPower(-1.0);
-            }
-            else {
-                motorGlyph1.setPower(0.0);
-                motorGlyph2.setPower(0.0);
-            }
-            if (gamepad1.x && bPressed > 0) {
-                motorGlyph3.setPower(-1.0);
-                motorGlyph4.setPower(-1.0);
-            }
-            else if (gamepad1.x && bPressed < 0) {
-                motorGlyph3.setPower(1.0);
-                motorGlyph4.setPower(1.0);
-            }
-            else {
-                motorGlyph3.setPower(0.0);
-                motorGlyph4.setPower(0.0);
+            if (gamepad1.a) {
+                if (bPressed > 0) {
+                    motorGlyph1.setPower(-1.0);
+                    motorGlyph2.setPower(1.0);
+                }
+                else if (bPressed < 0) {
+                    motorGlyph1.setPower(1.0);
+                    motorGlyph2.setPower(-1.0);
+                }
+                else {
+                    motorGlyph1.setPower(0.0);
+                    motorGlyph2.setPower(0.0);
+                }
             }
 
+            if (gamepad1.x) {
+                if (bPressed > 0) {
+                    motorGlyph3.setPower(-1.0);
+                    motorGlyph4.setPower(-1.0);
+                }
+                else if (bPressed < 0) {
+                    motorGlyph3.setPower(1.0);
+                    motorGlyph4.setPower(1.0);
+                }
+                else {
+                    motorGlyph1.setPower(0.0);
+                    motorGlyph2.setPower(0.0);
+                }
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
