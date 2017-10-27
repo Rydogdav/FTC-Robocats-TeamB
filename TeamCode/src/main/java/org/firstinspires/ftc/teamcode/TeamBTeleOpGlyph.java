@@ -90,34 +90,22 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
                 bPressed *= -1;
             }
 
-            if (gamepad1.a) {
-                if (bPressed > 0) {
+            if (gamepad1.left_trigger > 0.1) {
                     motorGlyph1.setPower(-1.0);
                     motorGlyph2.setPower(1.0);
-                }
-                else if (bPressed < 0) {
-                    motorGlyph1.setPower(1.0);
-                    motorGlyph2.setPower(-1.0);
-                }
-                else {
-                    motorGlyph1.setPower(0.0);
-                    motorGlyph2.setPower(0.0);
-                }
+            }
+            else {
+                motorGlyph1.setPower(0.0);
+                motorGlyph2.setPower(0.0);
             }
 
-            if (gamepad1.x) {
-                if (bPressed > 0) {
+            if (gamepad1.right_trigger > 0.1) {
                     motorGlyph3.setPower(-1.0);
                     motorGlyph4.setPower(-1.0);
-                }
-                else if (bPressed < 0) {
-                    motorGlyph3.setPower(1.0);
-                    motorGlyph4.setPower(1.0);
-                }
-                else {
-                    motorGlyph1.setPower(0.0);
-                    motorGlyph2.setPower(0.0);
-                }
+            }
+            else {
+                motorGlyph3.setPower(0.0);
+                motorGlyph4.setPower(0.0);
             }
 
             // Show the elapsed game time and wheel power.
