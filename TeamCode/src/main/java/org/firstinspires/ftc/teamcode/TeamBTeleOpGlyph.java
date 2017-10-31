@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -22,7 +23,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public DcMotor motorGlyph3 = null; //set motors to nothing
     public DcMotor motorGlyph4 = null; //set motors to nothing
     public int bPressed = 1;
-    
+    public Servo colorServo = null;
 
     @Override
     public void runOpMode() {
@@ -38,6 +39,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         motorGlyph2 = hardwareMap.get(DcMotor.class, "motorGlyph2");
         motorGlyph3 = hardwareMap.get(DcMotor.class, "motorGlyph3");
         motorGlyph4 = hardwareMap.get(DcMotor.class, "motorGlyph4"); //LIFT SYSTEM!
+        colorServo = hardwareMap.get(Servo.class, "colorServo");
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -75,6 +77,15 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             leftPower = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
 
+            if (gamepad1.y) {
+                telemetry.addLine("Y pressed");
+                colorServo.setPosition(80.0);
+                sleep(125);
+            }
+            else {
+                telemetry.addLine("Y not pressed");
+            }
+
             // Send calculated power to wheels
             if (leftPower >= 0.1 || rightPower >= 0.1 || leftPower <= -0.1 || rightPower <= 0.1) {
                 motorLeft.setPower(leftPower);
@@ -86,8 +97,8 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             }
 
             if (gamepad1.b) {
-                sleep(500);
                 bPressed *= -1;
+                sleep(500);
             }
 
             if (gamepad1.left_trigger > 0.1) {

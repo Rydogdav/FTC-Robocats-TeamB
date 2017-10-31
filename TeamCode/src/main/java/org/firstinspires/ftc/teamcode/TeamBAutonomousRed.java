@@ -13,9 +13,9 @@ import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="Autonomous Alpha 1.0", group="Autonomous")
-@Disabled
-public class TeamBAutonomous extends LinearOpMode {
+@Autonomous(name="Autonomous RED Alpha 1.0", group="Autonomous")
+
+public class TeamBAutonomousRed extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime(); 
     static final double     COUNTS_PER_MOTOR_REV    = 1220 ;
@@ -29,15 +29,6 @@ public class TeamBAutonomous extends LinearOpMode {
     public DcMotor motorRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
-    public double servoDegrees;
-    public double servoEquation = 1/255 * servoDegrees;
-    public double jewelInches;
-    public double jewelEquation = jewelInches / 2.54;
-    public boolean redTeam;
-    public boolean blueTeam;
-    public boolean confirmation = false;
-    public String decision;
-
 
     @Override
     public void runOpMode() {
@@ -45,6 +36,7 @@ public class TeamBAutonomous extends LinearOpMode {
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        colorServo = hardwareMap.get(Servo.class, "colorServo");
 
         motorLeft.setDirection(DcMotor.Direction.FORWARD);
         motorRight.setDirection(DcMotor.Direction.REVERSE);
@@ -66,7 +58,7 @@ public class TeamBAutonomous extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        while (confirmation == false) { //Locks in the alliance that we are on
+        /* while (confirmation == false) { //Locks in the alliance that we are on
             telemetry.addData("Press B for Red Alliance\nPress X for Blue Alliance", decision);
             if (gamepad1.b) {
                 decision = "Red";
@@ -80,7 +72,7 @@ public class TeamBAutonomous extends LinearOpMode {
                 blueTeam = true;
                 confirmation = true;
             }
-        }
+        } */
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
@@ -88,7 +80,7 @@ public class TeamBAutonomous extends LinearOpMode {
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout*/
 
-        jewelDrive(90, 10);
+        jewelDrive(90, 1);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -153,18 +145,15 @@ public class TeamBAutonomous extends LinearOpMode {
 
     //**JEWEL DRIVE**
     public void jewelDrive(double servoDegrees, double jewelInches) {  //Creates method named jewelDrive
+        double servoEquation = 1/255 * servoDegrees;
+        double jewelEquation = jewelInches / 2.54;
         colorServo.setPosition(servoEquation); //Takes argument(servoDegrees) and inputs it into the servo equation(1/255 * ser)
-        if (redTeam == true && colorSensor.red() <= 2) { //If we're on the red team & jewel = red, move back
+        encoderDrive(DRIVE_SPEED, 1, 1, 0.5);
+        if (colorSensor.red() <= 2) { //If we're on the red team & jewel = red, move back
             encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
         }
-        if (redTeam == true && colorSensor.blue() <= 2) { //If we're on the red team & jewel = blue, move forward
+        if (colorSensor.blue() <= 2) { //If we're on the red team & jewel = blue, move forward
             encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
-        }
-        if (blueTeam == true && colorSensor.red() <= 2) { //If we're on the blue team & jewel = red, move forward
-            encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
-        }
-        if (blueTeam == true && colorSensor.blue() <= 2) { //If we're on the blue team & jewel = blue, move back
-            encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
         }
     } //**JEWEL DRIVE**
 }
