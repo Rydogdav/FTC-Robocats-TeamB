@@ -23,7 +23,7 @@ public class TeamBAutonomousRed extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double     DRIVE_SPEED             = 0.6;
+    static final double     DRIVE_SPEED             = 0.2;
     static final double     TURN_SPEED              = 0.5;
     public DcMotor motorLeft = null;
     public DcMotor motorRight = null;
@@ -80,7 +80,7 @@ public class TeamBAutonomousRed extends LinearOpMode {
         encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout*/
 
-        jewelDrive(90, 1);
+        jewelDrive(150);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -144,16 +144,22 @@ public class TeamBAutonomousRed extends LinearOpMode {
     } //**ENCODER DRIVE**
 
     //**JEWEL DRIVE**
-    public void jewelDrive(double servoDegrees, double jewelInches) {  //Creates method named jewelDrive
-        double servoEquation = 1/255 * servoDegrees;
-        double jewelEquation = jewelInches / 2.54;
-        colorServo.setPosition(servoEquation); //Takes argument(servoDegrees) and inputs it into the servo equation(1/255 * ser)
-        encoderDrive(DRIVE_SPEED, 1, 1, 0.5);
-        if (colorSensor.red() <= 2) { //If we're on the red team & jewel = red, move back
-            encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
-        }
-        if (colorSensor.blue() <= 2) { //If we're on the red team & jewel = blue, move forward
-            encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
-        }
+    public void jewelDrive(double servoDegrees) {  //Creates method named jewelDrive
+        colorServo.setPosition(servoDegrees);
+        encoderDrive(DRIVE_SPEED, 0.2, 0.2, 1.0);
+         //Takes argument(servoDegrees) and inputs it into the servo equation(1/255 * ser)
+        PushBlueGlyph(1);
     } //**JEWEL DRIVE**
+
+    public void PushBlueGlyph(double jewelInches) {
+        double jewelEquation = jewelInches / 2.54;
+        while (colorSensor.red() < 8 && colorSensor.blue() < 8) {
+            if (colorSensor.red() >= 8) { //If we're on the red team & jewel = red, move back
+                encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
+            }
+            else if (colorSensor.blue() >= 8) { //If we're on the red team & jewel = blue, move forward
+                encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
+            }
+        }
+    }
 }

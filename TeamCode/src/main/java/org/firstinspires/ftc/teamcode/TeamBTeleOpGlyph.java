@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -23,6 +24,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public DcMotor motorGlyph3 = null; //set motors to nothing
     public DcMotor motorGlyph4 = null; //set motors to nothing
     public int bPressed = 1;
+    public ColorSensor colorSensor = null;
     public Servo colorServo = null;
 
     @Override
@@ -39,6 +41,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         motorGlyph2 = hardwareMap.get(DcMotor.class, "motorGlyph2");
         motorGlyph3 = hardwareMap.get(DcMotor.class, "motorGlyph3");
         motorGlyph4 = hardwareMap.get(DcMotor.class, "motorGlyph4"); //LIFT SYSTEM!
+        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
 
 
@@ -78,12 +81,11 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             rightPower = gamepad1.right_stick_y;
 
             if (gamepad1.y) {
-                telemetry.addLine("Y pressed");
-                colorServo.setPosition(80.0);
-                sleep(125);
+                colorServo.setPosition(150);
+                telemetry.addLine("Y");
             }
             else {
-                telemetry.addLine("Y not pressed");
+                telemetry.addLine("Nothing pressed");
             }
 
             // Send calculated power to wheels
