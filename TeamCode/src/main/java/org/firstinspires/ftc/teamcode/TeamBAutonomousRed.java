@@ -58,41 +58,11 @@ public class TeamBAutonomousRed extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        /* while (confirmation == false) { //Locks in the alliance that we are on
-            telemetry.addData("Press B for Red Alliance\nPress X for Blue Alliance", decision);
-            if (gamepad1.b) {
-                decision = "Red";
-                telemetry.addLine("Alliance Red");
-                redTeam = true;
-                confirmation = true;
-            }
-            if (gamepad1.x) {
-                decision = "Blue";
-                telemetry.addLine("Alliance Blue");
-                blueTeam = true;
-                confirmation = true;
-            }
-        } */
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        /*encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout*/
-
         jewelDrive(150);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
     //**ENCODER DRIVE**
     public void encoderDrive(double speed, double leftInches, double rightInches, double time) {
         int motorLeftTarget;
@@ -117,12 +87,6 @@ public class TeamBAutonomousRed extends LinearOpMode {
             motorLeft.setPower(speed);
             motorRight.setPower(speed);
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() && (runtime.seconds() < time) && (motorLeft.isBusy() && motorRight.isBusy())) {
 
                 // Display it for the driver.
@@ -146,20 +110,17 @@ public class TeamBAutonomousRed extends LinearOpMode {
     //**JEWEL DRIVE**
     public void jewelDrive(double servoDegrees) {  //Creates method named jewelDrive
         colorServo.setPosition(servoDegrees);
-        encoderDrive(DRIVE_SPEED, 0.2, 0.2, 1.0);
-         //Takes argument(servoDegrees) and inputs it into the servo equation(1/255 * ser)
-        PushBlueGlyph(1);
+        pushBlueJewel(4);
     } //**JEWEL DRIVE**
 
-    public void PushBlueGlyph(double jewelInches) {
+    public void pushBlueJewel(double jewelInches) {
         double jewelEquation = jewelInches / 2.54;
-        while (colorSensor.red() < 8 && colorSensor.blue() < 8) {
-            if (colorSensor.red() >= 8) { //If we're on the red team & jewel = red, move back
-                encoderDrive(DRIVE_SPEED,  jewelEquation,  -jewelEquation, 1.0);
-            }
-            else if (colorSensor.blue() >= 8) { //If we're on the red team & jewel = blue, move forward
-                encoderDrive(DRIVE_SPEED,  -jewelEquation,  jewelEquation, 1.0);
-            }
+        //while (colorSensor.red() < 8 && colorSensor.blue() < 8) {
+        if (colorSensor.red() > colorSensor.blue()) {
+            encoderDrive(0.15,  -jewelEquation,  -jewelEquation, 1.0);
+        }
+        else if (colorSensor.blue() > colorSensor.red()) {
+            encoderDrive(0.15,  jewelEquation,  jewelEquation, 1.0);
         }
     }
 }

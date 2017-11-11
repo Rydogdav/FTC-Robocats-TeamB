@@ -19,13 +19,12 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     public DcMotor motorLeft = null; //set motors to nothing
     public DcMotor motorRight = null; //set motors to nothing
-    public DcMotor motorGlyph1 = null; //set motors to nothing
-    public DcMotor motorGlyph2 = null; //set motors to nothing
-    public DcMotor motorGlyph3 = null; //set motors to nothing
-    public DcMotor motorGlyph4 = null; //set motors to nothing
     public int bPressed = 1;
-    public ColorSensor colorSensor = null;
-    public Servo colorServo = null;
+    public DcMotor motorArm = null;
+    public Servo servoArm = null;
+    //public Servo colorServo = null;
+    static final double SERVO_UP = 1.0;
+    static final double SERVO_DOWN = 0.6;
 
     @Override
     public void runOpMode() {
@@ -37,22 +36,16 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-        motorGlyph1 = hardwareMap.get(DcMotor.class, "motorGlyph1");
-        motorGlyph2 = hardwareMap.get(DcMotor.class, "motorGlyph2");
-        motorGlyph3 = hardwareMap.get(DcMotor.class, "motorGlyph3");
-        motorGlyph4 = hardwareMap.get(DcMotor.class, "motorGlyph4"); //LIFT SYSTEM!
-        colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        colorServo = hardwareMap.get(Servo.class, "colorServo");
+        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
+        servoArm = hardwareMap.get(Servo.class, "servoArm");
+        //colorServo = hardwareMap.get(Servo.class, "colorServo");
 
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
         motorRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
-        motorGlyph1.setDirection(DcMotor.Direction.FORWARD); // sets the first glyph motor direction.
-        motorGlyph2.setDirection(DcMotor.Direction.FORWARD); // sets the second glyph motor direction.
-        motorGlyph3.setDirection(DcMotor.Direction.FORWARD); // sets the third glyph motor direction.
-        motorGlyph4.setDirection(DcMotor.Direction.FORWARD); // LIFT SYSTEM! sets the final glyph motor direction.
+        motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -80,50 +73,41 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             leftPower = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
 
-            if (gamepad1.y) {
-                colorServo.setPosition(150);
-                telemetry.addLine("Y");
-            }
-            else {
-                telemetry.addLine("Nothing pressed");
-            }
-
             // Send calculated power to wheels
             if (leftPower >= 0.1 || rightPower >= 0.1 || leftPower <= -0.1 || rightPower <= 0.1) {
                 motorLeft.setPower(leftPower);
                 motorRight.setPower(rightPower);
+                idle();
             }
             else {
                 motorLeft.setPower(0);
                 motorRight.setPower(0);
             }
-
+            if (gamepad1.right_trigger >= 0.1) { //If the right trigger is pressed, set the position to the maximum position and the power to the trigger value, going forwards
+                motorArm.setPower(gamepad1.right_trigger * 0.3);
+            }
+            else if (gamepad1.left_trigger >= 0.1) {
+                motorArm.setPower(-gamepad1.left_trigger * 0.3);
+            }
+            else {
+                motorArm.setPower(0);
+            }
             if (gamepad1.b) {
                 bPressed *= -1;
-                sleep(500);
+                sleep(250);
             }
-
-            if (gamepad1.left_trigger > 0.1) {
-                    motorGlyph1.setPower(-1.0);
-                    motorGlyph2.setPower(1.0);
+            if (bPressed == 1) {
+                servoArm.setPosition(SERVO_UP);
             }
-            else {
-                motorGlyph1.setPower(0.0);
-                motorGlyph2.setPower(0.0);
+            if (bPressed == -1) {
+                servoArm.setPosition(SERVO_DOWN);
             }
-
-            if (gamepad1.right_trigger > 0.1) {
-                    motorGlyph3.setPower(-1.0);
-                    motorGlyph4.setPower(-1.0);
-            }
-            else {
-                motorGlyph3.setPower(0.0);
-                motorGlyph4.setPower(0.0);
-            }
+            idle();
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("bPressed = ", bPressed);
             telemetry.update();
         }
     }
