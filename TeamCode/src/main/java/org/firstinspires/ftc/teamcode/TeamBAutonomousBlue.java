@@ -8,10 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-/**
- * Created by FTC Robotics on 10/30/2017.
- */
-
 @Autonomous(name="Autonomous BLUE Alpha 1.0", group="Autonomous")
 
 public class TeamBAutonomousBlue extends LinearOpMode {
@@ -62,67 +58,57 @@ public class TeamBAutonomousBlue extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        jewelDrive(150);
+        jewelDrive();
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    //**ENCODER DRIVE**
     public void encoderDrive(double speed, double leftInches, double rightInches, double time) {
         int motorLeftTarget;
         int motorRightTarget;
 
-        // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            // Determine new target position, and pass to motor controller
             motorLeftTarget = motorLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
             motorRightTarget = motorRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
 
             motorLeft.setTargetPosition(motorLeftTarget);
             motorRight.setTargetPosition(motorRightTarget);
 
-            // Turn On RUN_TO_POSITION
             motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // reset the timeout time and start motion.
             runtime.reset();
             motorLeft.setPower(speed);
             motorRight.setPower(speed);
 
             while (opModeIsActive() && (runtime.seconds() < time) && (motorLeft.isBusy() && motorRight.isBusy())) {
 
-                // Display it for the driver.
                 telemetry.addData("Path1", "Running to %7d :%7d", motorLeftTarget, motorRightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
                 telemetry.update();
             }
 
-            // Stop all motion;
             motorLeft.setPower(0);
             motorRight.setPower(0);
 
-            // Turn off RUN_TO_POSITION
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            //  sleep(250);   // optional pause after each move
         }
-    } //**ENCODER DRIVE**
+    }
 
-    public void jewelDrive(double servoDegrees) {
-        colorServo.setPosition(servoDegrees);
+    public void jewelDrive() {
+        colorServo.setPosition(0);
+        sleep(1000);
         pushRedJewel(4);
     }
+
     public void pushRedJewel(double jewelInches) {
-        double jewelEquation = jewelInches / 2.54;
-        //while (colorSensor.red() < 8 && colorSensor.blue() < 8) {
-            if (colorSensor.red() > colorSensor.blue()) {
-                encoderDrive(0.15, jewelEquation, jewelEquation, 1.0);
-            }
-            else if (colorSensor.blue() > colorSensor.red()) {
-                encoderDrive(0.15, -jewelEquation, -jewelEquation, 1.0);
+        //double jewelEquation = jewelInches / 2.54;
+        if (colorSensor.red() > colorSensor.blue()) {
+            encoderDrive(0.15, -jewelInches, -jewelInches, 1.0);
+        } else if (colorSensor.blue() > colorSensor.red()) {
+            encoderDrive(0.15, jewelInches, jewelInches, 1.0);
         }
     }
 }

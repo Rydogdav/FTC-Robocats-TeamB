@@ -12,20 +12,15 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.sql.Time;
 
-@TeleOp(name="Tele Op Glyph Alpha 1.2", group="Linear Opmode")
-public class TeamBTeleOpGlyph extends LinearOpMode {
+@TeleOp(name="Relic Arm Test", group="Linear Opmode")
+@Disabled
+public class TeamBRelicArmTest extends LinearOpMode {
 
     // Declare OpMode members.
     public ElapsedTime runtime = new ElapsedTime();
     public DcMotor motorLeft = null; //set motors to nothing
     public DcMotor motorRight = null; //set motors to nothing
-    public int bPressed = 1;
-    public DcMotor motorArm = null;
-    public Servo servoArm = null;
-    //public Servo colorServo = null;
-    static final double SERVO_UP = 0.85;
-    static final double SERVO_DOWN = 0.67;
-    public Servo colorServo = null;
+    public Servo relicArm = null;
 
     @Override
     public void runOpMode() {
@@ -37,17 +32,12 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         // step (using the FTC Robot Controller app on the phone).
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
-        servoArm = hardwareMap.get(Servo.class, "servoArm");
-        colorServo = hardwareMap.get(Servo.class, "colorServo");
-        //colorServo = hardwareMap.get(Servo.class, "colorServo");
-
+        relicArm = hardwareMap.get(Servo.class, "relicArm");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
         motorRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
-        motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -72,9 +62,6 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             */
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
-
-            colorServo.setPosition(0.5);
-            
             leftPower = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
 
@@ -88,32 +75,15 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
                 motorLeft.setPower(0);
                 motorRight.setPower(0);
             }
-            if (gamepad1.right_trigger >= 0.1) { //If the right trigger is pressed, set the position to the maximum position and the power to the trigger value, going forwards
-                motorArm.setPower(gamepad1.right_trigger * 0.3);
-            }
-            else if (gamepad1.left_trigger >= 0.1) {
-                motorArm.setPower(-gamepad1.left_trigger * 0.3);
-            }
-            else {
-                motorArm.setPower(0);
-            }
-            if (gamepad1.b) {
-                bPressed *= -1;
-                sleep(250);
-            }
-            if (bPressed == 1) {
-                servoArm.setPosition(SERVO_UP);
-            }
-            if (bPressed == -1) {
-                servoArm.setPosition(SERVO_DOWN);
-            }
-            idle();
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.addData("bPressed = ", bPressed);
-            telemetry.update();
+            if (gamepad1.y) {
+                relicArm.setPosition(100);
+            }
+
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+                telemetry.update();
         }
     }
 }

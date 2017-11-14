@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-/**
- * Created by FTC Robotics on 10/3/2017.
- */
-
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -58,7 +54,7 @@ public class TeamBAutonomousRed extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        jewelDrive(150);
+        jewelDrive();
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -108,19 +104,18 @@ public class TeamBAutonomousRed extends LinearOpMode {
     } //**ENCODER DRIVE**
 
     //**JEWEL DRIVE**
-    public void jewelDrive(double servoDegrees) {  //Creates method named jewelDrive
-        colorServo.setPosition(servoDegrees);
+    public void jewelDrive() {  //Creates method named jewelDrive
+        colorServo.setPosition(0);
+        sleep(1000);
         pushBlueJewel(4);
     } //**JEWEL DRIVE**
 
     public void pushBlueJewel(double jewelInches) {
-        double jewelEquation = jewelInches / 2.54;
-        //while (colorSensor.red() < 8 && colorSensor.blue() < 8) {
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15,  -jewelEquation,  -jewelEquation, 1.0);
+            encoderDrive(0.15,  jewelInches,  jewelInches, 1.0);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15,  jewelEquation,  jewelEquation, 1.0);
+            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
         }
     }
 }
