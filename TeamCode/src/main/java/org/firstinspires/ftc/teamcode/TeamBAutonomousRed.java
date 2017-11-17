@@ -118,4 +118,9 @@ public class TeamBAutonomousRed extends LinearOpMode {
             encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
         }
     }
+    /* public void parkOnCryptobox(double distance) {
+        colorServo.setPosition(0.5);
+        sleep(100);
+        encoderDrive(0.15,  distance,  distance, 1.0);
+    } */
 }

@@ -22,8 +22,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public int bPressed = 1;
     public DcMotor motorArm = null;
     public Servo servoArm = null;
-    //public Servo colorServo = null;
-    static final double SERVO_UP = 0.85;
+    static final double SERVO_UP = 0.9;
     static final double SERVO_DOWN = 0.67;
     public Servo colorServo = null;
 
@@ -40,7 +39,6 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         servoArm = hardwareMap.get(Servo.class, "servoArm");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
-        //colorServo = hardwareMap.get(Servo.class, "colorServo");
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -73,8 +71,8 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
 
-            colorServo.setPosition(0.5);
-            
+            colorServo.setPosition(0.7);
+
             leftPower = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
 
