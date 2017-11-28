@@ -25,6 +25,8 @@ public class TeamBAutonomousRed extends LinearOpMode {
     public DcMotor motorRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
+    //public ServoControllerEx servoControl = null;
+    public final int SERVO_PORT = 2;
 
     @Override
     public void runOpMode() {
@@ -54,6 +56,7 @@ public class TeamBAutonomousRed extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        //servoControl.setServoPwmEnable(SERVO_PORT);
         jewelDrive();
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -105,7 +108,7 @@ public class TeamBAutonomousRed extends LinearOpMode {
 
     //**JEWEL DRIVE**
     public void jewelDrive() {  //Creates method named jewelDrive
-        colorServo.setPosition(0);
+        colorServo.setPosition(0.0);
         sleep(1000);
         pushBlueJewel(4);
     } //**JEWEL DRIVE**
@@ -113,14 +116,19 @@ public class TeamBAutonomousRed extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(0.15,  jewelInches,  jewelInches, 1.0);
+            //parkOnCryptobox(609);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
+            //parkOnCryptobox(609);
+        }
+        else {
+            //parkOnCryptobox(609);
         }
     }
-    /* public void parkOnCryptobox(double distance) {
-        colorServo.setPosition(0.5);
-        sleep(100);
-        encoderDrive(0.15,  distance,  distance, 1.0);
-    } */
+    public void parkOnCryptobox(double distance) {
+        colorServo.setPosition(1.0);
+        sleep(1000);
+        encoderDrive(0.15,  distance,  distance, 5.0);
+    }
 }

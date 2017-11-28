@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -22,8 +23,11 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public int bPressed = 1;
     public DcMotor motorArm = null;
     public Servo servoArm = null;
+    public Servo servoArm2 = null;
+    //public ServoControllerEx servoControl = null;
+    public final int SERVO_PORT = 2;
     static final double SERVO_UP = 0.9;
-    static final double SERVO_DOWN = 0.67;
+    static final double SERVO_DOWN = 0.55;
     public Servo colorServo = null;
 
     @Override
@@ -38,6 +42,8 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
         motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         servoArm = hardwareMap.get(Servo.class, "servoArm");
+        servoArm2 = hardwareMap.get(Servo.class, "servoArm2");
+        //servoControl = hardwareMap.get(ServoControllerEx.class, "Servo_Controller_1");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
 
 
@@ -71,7 +77,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
 
-            colorServo.setPosition(0.7);
+            //servoControl.setServoPwmDisable(SERVO_PORT);
 
             leftPower = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
@@ -101,9 +107,11 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             }
             if (bPressed == 1) {
                 servoArm.setPosition(SERVO_UP);
+                servoArm2.setPosition(SERVO_DOWN);
             }
             if (bPressed == -1) {
                 servoArm.setPosition(SERVO_DOWN);
+                servoArm2.setPosition(SERVO_UP);
             }
             idle();
 

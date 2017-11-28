@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
@@ -28,6 +29,8 @@ public class TeamBAutonomousBlue extends LinearOpMode {
     public boolean blueTeam;
     public boolean confirmation = false;
     public String decision;
+    //public ServoControllerEx servoControl = null;
+    public final int SERVO_PORT = 2;
 
 
     @Override
@@ -58,6 +61,7 @@ public class TeamBAutonomousBlue extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        //servoControl.setServoPwmEnable(SERVO_PORT);
         jewelDrive();
         telemetry.addData("Path", "Complete");
         telemetry.update();
