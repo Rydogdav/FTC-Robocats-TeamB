@@ -18,16 +18,20 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
 
     // Declare OpMode members.
     public ElapsedTime runtime = new ElapsedTime();
-    public DcMotor motorLeft = null; //set motors to nothing
-    public DcMotor motorRight = null; //set motors to nothing
-    public int bPressed = 1;
+    public DcMotor motorFLeft = null; //set motors to nothing
+    public DcMotor motorFRight = null; //set motors to nothing
+    public DcMotor motorBLeft = null; //set motors to nothing
+    public DcMotor motorBRight = null; //set motors to nothing
+    public int rbPressed = 1;
+    public int lbPressed = 1;
+    public int xPressed = 1;
     public DcMotor motorArm = null;
     public Servo servoArm = null;
     public Servo servoArm2 = null;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
-    static final double SERVO_UP = 0.9;
-    static final double SERVO_DOWN = 0.55;
+    static final double SERVO_UP = 0.9; // changed from 0.9
+    static final double SERVO_DOWN = 0.55; // changed from 0.55 ... this is probably too wide open
     public Servo colorServo = null;
 
     @Override
@@ -38,8 +42,10 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
-        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
+        motorFLeft = hardwareMap.get(DcMotor.class, "motorFLeft");
+        motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
+        motorBLeft = hardwareMap.get(DcMotor.class, "motorBLeft");
+        motorBRight = hardwareMap.get(DcMotor.class, "motorBRight");
         motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         servoArm = hardwareMap.get(Servo.class, "servoArm");
         servoArm2 = hardwareMap.get(Servo.class, "servoArm2");
@@ -49,76 +55,74 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        motorLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
-        motorRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
+        motorFLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
+        motorFRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
+        motorBLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
+        motorBRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
         motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+        double leftPower;
+        double rightPower;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-            /*
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-            */
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-
             //servoControl.setServoPwmDisable(SERVO_PORT);
+            colorServo.setPosition(1.0);
 
             leftPower = gamepad1.left_stick_y;
             rightPower = gamepad1.right_stick_y;
 
             // Send calculated power to wheels
-            if (leftPower >= 0.1 || rightPower >= 0.1 || leftPower <= -0.1 || rightPower <= 0.1) {
-                motorLeft.setPower(leftPower);
-                motorRight.setPower(rightPower);
+            if (!gamepad1.left_bumper) {
+                leftPower *= 0.7;
+                rightPower *= 0.7;
                 idle();
             }
-            else {
-                motorLeft.setPower(0);
-                motorRight.setPower(0);
-            }
             if (gamepad1.right_trigger >= 0.1) { //If the right trigger is pressed, set the position to the maximum position and the power to the trigger value, going forwards
-                motorArm.setPower(gamepad1.right_trigger * 0.3);
+                motorArm.setPower(gamepad1.right_trigger * 0.4);
             }
             else if (gamepad1.left_trigger >= 0.1) {
                 motorArm.setPower(-gamepad1.left_trigger * 0.3);
             }
             else {
-                motorArm.setPower(0);
+                motorArm.setPower(0.1);
             }
-            if (gamepad1.b) {
-                bPressed *= -1;
+            if (gamepad1.right_bumper) {
+                rbPressed *= -1;
                 sleep(250);
             }
-            if (bPressed == 1) {
+            if (rbPressed == 1) {
                 servoArm.setPosition(SERVO_UP);
-                servoArm2.setPosition(SERVO_DOWN);
+                servoArm2.setPosition(1.0 - SERVO_UP);
             }
-            if (bPressed == -1) {
+            if (rbPressed == -1) {
                 servoArm.setPosition(SERVO_DOWN);
-                servoArm2.setPosition(SERVO_UP);
+                servoArm2.setPosition(1.0 - SERVO_DOWN);
             }
+
+            /*if (gamepad1.x) {
+                xPressed *= -1;
+                sleep(250);
+            }
+            if (xPressed == 1) {
+                colorServo.setPosition(0.5);
+            }
+            if (xPressed == -1) {
+                colorServo.setPosition(1.0);
+            }*/
+            motorFLeft.setPower(leftPower);
+            motorFRight.setPower(rightPower);
+            motorBLeft.setPower(leftPower);
+            motorBRight.setPower(rightPower);
             idle();
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.addData("bPressed = ", bPressed);
+            telemetry.addData("bPressed = ", rbPressed);
             telemetry.update();
         }
     }

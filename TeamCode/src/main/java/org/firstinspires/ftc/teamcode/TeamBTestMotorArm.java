@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 import java.lang.Math;
 
 @TeleOp(name="Arm Test", group="Linear Opmode")
+@Disabled
 
 public class TeamBTestMotorArm extends LinearOpMode {
 

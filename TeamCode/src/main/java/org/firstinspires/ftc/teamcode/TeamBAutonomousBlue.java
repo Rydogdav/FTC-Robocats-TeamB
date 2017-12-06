@@ -21,8 +21,8 @@ public class TeamBAutonomousBlue extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double DRIVE_SPEED = 0.2;
     static final double TURN_SPEED = 0.5;
-    public DcMotor motorLeft = null;
-    public DcMotor motorRight = null;
+    public DcMotor motorFLeft = null;
+    public DcMotor motorFRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
     public boolean redTeam;
@@ -36,26 +36,26 @@ public class TeamBAutonomousBlue extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");
-        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
+        motorFLeft = hardwareMap.get(DcMotor.class, "motorFLeft");
+        motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
 
-        motorLeft.setDirection(DcMotor.Direction.FORWARD);
-        motorRight.setDirection(DcMotor.Direction.REVERSE);
+        motorFLeft.setDirection(DcMotor.Direction.FORWARD);
+        motorFRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Initialized");    //
         telemetry.update();
 
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0", "Starting at %7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+        telemetry.addData("Path0", "Starting at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -68,36 +68,36 @@ public class TeamBAutonomousBlue extends LinearOpMode {
     }
 
     public void encoderDrive(double speed, double leftInches, double rightInches, double time) {
-        int motorLeftTarget;
-        int motorRightTarget;
+        int motorFLeftTarget;
+        int motorFRightTarget;
 
         if (opModeIsActive()) {
 
-            motorLeftTarget = motorLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            motorRightTarget = motorRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            motorFLeftTarget = motorFLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            motorFRightTarget = motorFRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
 
-            motorLeft.setTargetPosition(motorLeftTarget);
-            motorRight.setTargetPosition(motorRightTarget);
+            motorFLeft.setTargetPosition(motorFLeftTarget);
+            motorFRight.setTargetPosition(motorFRightTarget);
 
-            motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorFLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorFRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             runtime.reset();
-            motorLeft.setPower(speed);
-            motorRight.setPower(speed);
+            motorFLeft.setPower(speed);
+            motorFRight.setPower(speed);
 
-            while (opModeIsActive() && (runtime.seconds() < time) && (motorLeft.isBusy() && motorRight.isBusy())) {
+            while (opModeIsActive() && (runtime.seconds() < time) && (motorFLeft.isBusy() && motorFRight.isBusy())) {
 
-                telemetry.addData("Path1", "Running to %7d :%7d", motorLeftTarget, motorRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+                telemetry.addData("Path1", "Running to %7d :%7d", motorFLeftTarget, motorFRightTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
                 telemetry.update();
             }
 
-            motorLeft.setPower(0);
-            motorRight.setPower(0);
+            motorFLeft.setPower(0);
+            motorFRight.setPower(0);
 
-            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
