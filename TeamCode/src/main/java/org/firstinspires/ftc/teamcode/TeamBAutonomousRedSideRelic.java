@@ -134,25 +134,25 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
     public void jewelDrive() {  //Creates method named jewelDrive
         colorServo.setPosition(0.0);
         sleep(1000);
-        pushBlueJewel(95);
+        pushBlueJewel(4);
     } //**JEWEL DRIVE**
 
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
-            parkOnCryptobox(35.96);
+            encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
+            parkOnCryptobox(34);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15,  jewelInches,  jewelInches, 1.0);
-            parkOnCryptobox(35.96);
+            encoderDrive(DRIVE_SPEED,  jewelInches,  jewelInches, 1.5);
+            parkOnCryptobox(30);
         }
         else {
-            parkOnCryptobox(35.96);
+            parkOnCryptobox(32);
         }
     }
     public void parkOnCryptobox(double distance) {
         colorServo.setPosition(1.0);
         sleep(1000);
-        encoderDrive(0.15,  distance,  distance, 5.0);
+        encoderDrive(DRIVE_SPEED,  distance,  distance, 2.5);
     }
 }

@@ -110,10 +110,22 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     public void pushRedJewel(double jewelInches) {
         //double jewelEquation = jewelInches / 2.54;
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15, -jewelInches, -jewelInches, 1.0);
-        } else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15, jewelInches, jewelInches, 1.0);
+            encoderDrive(0.15, jewelInches, jewelInches, 1.5);
+            parkOnCryptobox(30);
         }
+        else if (colorSensor.blue() > colorSensor.red()) {
+            encoderDrive(0.15, -jewelInches, -jewelInches, 1.5);
+            parkOnCryptobox(34);
+        }
+        else {
+            parkOnCryptobox(32);
+        }
+    }
+
+    public void parkOnCryptobox(double distance) {
+        colorServo.setPosition(1.0);
+        sleep(1000);
+        encoderDrive(0.15,  distance,  distance, 5.0);
     }
 }
 

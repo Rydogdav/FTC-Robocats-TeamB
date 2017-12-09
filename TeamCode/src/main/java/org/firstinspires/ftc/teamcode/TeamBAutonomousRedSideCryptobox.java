@@ -139,11 +139,11 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
 
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
+            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.5);
             parkOnCryptobox(35.96);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15,  jewelInches, jewelInches, 1.0);
+            encoderDrive(0.15,  jewelInches, jewelInches, 1.5);
             parkOnCryptobox(35.96);
         }
         else {
