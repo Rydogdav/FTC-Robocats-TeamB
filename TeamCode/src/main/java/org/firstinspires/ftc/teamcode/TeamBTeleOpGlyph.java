@@ -23,6 +23,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public DcMotor motorBLeft = null; //set motors to nothing
     public DcMotor motorBRight = null; //set motors to nothing
     public int rbPressed = 1;
+    public int bPressed = 1;
     public int lbPressed = 1;
     public int xPressed = 1;
     public DcMotor motorArm = null;
@@ -30,8 +31,9 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public Servo servoArm2 = null;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
-    static final double SERVO_UP = 0.9; // changed from 0.9
-    static final double SERVO_DOWN = 0.55; // changed from 0.55 ... this is probably too wide open
+    static final double SERVO_UP = 0.9; // ** OPEN **
+    static final double SERVO_DOWN = 0.50; // ** CLOSED **
+    static final double SERVO_HALF = 0.65; // ** HALF **
     public Servo colorServo = null;
 
     @Override
@@ -67,63 +69,111 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
 
         double leftPower;
         double rightPower;
+        double speed;
+        double gripperState = 1;
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             //servoControl.setServoPwmDisable(SERVO_PORT);
             colorServo.setPosition(1.0);
 
-            leftPower = gamepad1.left_stick_y;
-            rightPower = gamepad1.right_stick_y;
+            // *****Drive code*****
+            /*int slowMode;                                   // test code for left bumper slow mode
+            if (gamepad1.left_bumper) slowMode = 1;
+            else slowMode = 0;*/
 
-            // Send calculated power to wheels
-            if (!gamepad1.left_bumper) {
-                leftPower *= 0.7;
-                rightPower *= 0.7;
-                idle();
+            leftPower = gamepad1.left_stick_y; // removed "- (slowMode * gamepad1.left_stick_y * 0.7)"
+            rightPower = gamepad1.right_stick_y; // removed "- (slowMode * gamepad1.right_stick_y * 0.7)"
+
+//            if (gamepad1.left_bumper) {             // slow mode code
+//                lbPressed *= -1;
+//                sleep(250);
+//            }
+
+            if (gamepad1.left_bumper) {             // slow mode code
+                speed = 0.5;
             }
-            if (gamepad1.right_trigger >= 0.1) { //If the right trigger is pressed, set the position to the maximum position and the power to the trigger value, going forwards
-                motorArm.setPower(gamepad1.right_trigger * 0.4);
+            else {
+                speed = 1.0;
+            }
+
+            //if (lbPressed == 1) {
+                motorFLeft.setPower(leftPower * speed);
+                motorFRight.setPower(rightPower * speed);
+                motorBLeft.setPower(leftPower * speed);
+                motorBRight.setPower(rightPower * speed);
+            //}
+            //if (lbPressed == -1) {
+            //    motorFLeft.setPower(leftPower * 0.5);
+            //    motorFRight.setPower(rightPower * 0.5);
+            //    motorBLeft.setPower(leftPower * 0.5);
+            //    motorBRight.setPower(rightPower * 0.5);
+            //    idle();
+            //}
+
+
+
+            // *****Arm code*****
+            if (gamepad1.right_trigger >= 0.1) {
+                motorArm.setPower(gamepad1.right_trigger * 0.4); // move arm up
             }
             else if (gamepad1.left_trigger >= 0.1) {
-                motorArm.setPower(-gamepad1.left_trigger * 0.3);
+                motorArm.setPower(-gamepad1.left_trigger * 0.2); // move arm down
             }
             else {
                 motorArm.setPower(0.1);
             }
-            if (gamepad1.right_bumper) {
-                rbPressed *= -1;
-                sleep(250);
-            }
-            if (rbPressed == 1) {
-                servoArm.setPosition(SERVO_UP);
-                servoArm2.setPosition(1.0 - SERVO_UP);
-            }
-            if (rbPressed == -1) {
-                servoArm.setPosition(SERVO_DOWN);
-                servoArm2.setPosition(1.0 - SERVO_DOWN);
-            }
 
-            /*if (gamepad1.x) {
-                xPressed *= -1;
-                sleep(250);
-            }
-            if (xPressed == 1) {
-                colorServo.setPosition(0.5);
-            }
-            if (xPressed == -1) {
-                colorServo.setPosition(1.0);
-            }*/
-            motorFLeft.setPower(leftPower);
-            motorFRight.setPower(rightPower);
-            motorBLeft.setPower(leftPower);
-            motorBRight.setPower(rightPower);
-            idle();
+            // *****Gripper code*****
+//            if (gamepad1.right_bumper) {
+//                rbPressed *= -1;
+//            if (gamepad1.b) {
+//                bPressed *= -1;
+//                sleep(250);
+//            }
+        if (gamepad1.right_bumper) {
+            if (gripperState == 1)
+                gripperState = -1;
+            else
+                gripperState = 1;
+            sleep(250);
+        }
+
+        if (gamepad1.right_stick_button) {
+                servoArm.setPosition(SERVO_HALF);
+                servoArm2.setPosition(1.0 - SERVO_HALF);
+        }
+        else if (gripperState == 1){
+            servoArm.setPosition(SERVO_UP);
+            servoArm2.setPosition(1.0 - SERVO_UP);
+        }
+        else if (gripperState == -1){
+            servoArm.setPosition(SERVO_DOWN);
+            servoArm2.setPosition(1.0 - SERVO_DOWN);
+        }
+
+//            if (bPressed == -1) {                           // Gripper Ha
+//                servoArm.setPosition(SERVO_HALF);
+//                servoArm2.setPosition(1.0 - SERVO_HALF);
+//            }
+//            else if (bPressed == 1) {
+//                if (rbPressed == 1) {
+//                    servoArm.setPosition(SERVO_UP);
+//                    servoArm2.setPosition(1.0 - SERVO_UP);
+//                }
+//                if (rbPressed == -1) {                      // Gripper closed
+//                    servoArm.setPosition(SERVO_DOWN);
+//                    servoArm2.setPosition(1.0 - SERVO_DOWN);
+//                }
+//            }
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.addData("bPressed = ", rbPressed);
             telemetry.update();
+            idle();
         }
     }
 }

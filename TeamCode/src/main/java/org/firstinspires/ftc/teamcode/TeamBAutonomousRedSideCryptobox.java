@@ -9,11 +9,11 @@ import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="Autonomous RED Alpha 1.0", group="Autonomous")
+@Autonomous(name="Autonomous RED CRYPTOBOX Alpha 1.0", group="Autonomous")
 
-public class TeamBAutonomousRed extends LinearOpMode {
+public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
 
-    public ElapsedTime runtime = new ElapsedTime(); 
+    public ElapsedTime runtime = new ElapsedTime();
     static final double     COUNTS_PER_MOTOR_REV    = 1220 ;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
@@ -139,15 +139,15 @@ public class TeamBAutonomousRed extends LinearOpMode {
 
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15,  jewelInches,  jewelInches, 1.0);
-            parkOnCryptobox(913.5);
+            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
+            parkOnCryptobox(35.96);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.0);
-            parkOnCryptobox(913.5);
+            encoderDrive(0.15,  jewelInches, jewelInches, 1.0);
+            parkOnCryptobox(35.96);
         }
         else {
-            parkOnCryptobox(913.5);
+            parkOnCryptobox(35.96);
         }
     }
     public void parkOnCryptobox(double distance) {

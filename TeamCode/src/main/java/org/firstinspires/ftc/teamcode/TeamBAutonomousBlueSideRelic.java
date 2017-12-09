@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.ServoControllerEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="Autonomous BLUE Alpha 1.0", group="Autonomous")
+@Autonomous(name="Autonomous BLUE RELIC Alpha 1.0", group="Autonomous")
 
-public class TeamBAutonomousBlue extends LinearOpMode {
+public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();
     static final double COUNTS_PER_MOTOR_REV = 1220;
