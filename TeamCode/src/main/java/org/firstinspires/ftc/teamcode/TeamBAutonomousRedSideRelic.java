@@ -24,6 +24,7 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
     public DcMotor motorBLeft = null;
+    public DcMotor motorArm = null;
     public DcMotor motorBRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
@@ -37,6 +38,7 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
         motorBLeft = hardwareMap.get(DcMotor.class, "motorBLeft");
         motorBRight = hardwareMap.get(DcMotor.class, "motorBRight");
+        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
 
@@ -44,6 +46,7 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         motorFRight.setDirection(DcMotor.Direction.REVERSE);
         motorBLeft.setDirection(DcMotor.Direction.FORWARD);
         motorBRight.setDirection(DcMotor.Direction.REVERSE);
+        motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Initialized");    //
@@ -151,7 +154,10 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         }
     }
     public void parkOnCryptobox(double distance) {
+        motorArm.setPower(0.4);
+        sleep(2000);
         colorServo.setPosition(1.0);
+        motorArm.setPower(0.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  distance,  distance, 2.5);
     }

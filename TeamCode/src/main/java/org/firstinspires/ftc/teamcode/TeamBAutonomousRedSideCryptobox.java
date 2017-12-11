@@ -27,6 +27,7 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     public DcMotor motorBRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
+    public DcMotor motorArm = null;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
 
@@ -37,6 +38,7 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
         motorBLeft = hardwareMap.get(DcMotor.class, "motorBLeft");
         motorBRight = hardwareMap.get(DcMotor.class, "motorBRight");
+        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
 
@@ -44,6 +46,7 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         motorFRight.setDirection(DcMotor.Direction.REVERSE);
         motorBLeft.setDirection(DcMotor.Direction.FORWARD);
         motorBRight.setDirection(DcMotor.Direction.REVERSE);
+        motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Initialized");    //
@@ -139,20 +142,23 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
 
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15,  -jewelInches,  -jewelInches, 1.5);
-            parkOnCryptobox(35.96);
+            encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
+            parkOnCryptobox(34);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15,  jewelInches, jewelInches, 1.5);
-            parkOnCryptobox(35.96);
+            encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
+            parkOnCryptobox(30);
         }
         else {
-            parkOnCryptobox(35.96);
+            parkOnCryptobox(32);
         }
     }
     public void parkOnCryptobox(double distance) {
+        motorArm.setPower(0.4);
+        sleep(2000);
         colorServo.setPosition(1.0);
+        motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(0.15,  distance,  distance, 5.0);
+        encoderDrive(DRIVE_SPEED,  distance,  distance, 5.0);
     }
 }

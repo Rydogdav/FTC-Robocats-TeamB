@@ -172,6 +172,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.addData("bPressed = ", rbPressed);
+            telemetry.addLine("Right!!");
             telemetry.update();
             idle();
         }

@@ -23,8 +23,11 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     static final double TURN_SPEED = 0.5;
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
+    public DcMotor motorBLeft = null; //set motors to nothing
+    public DcMotor motorBRight = null; //set motors to nothing
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
+    public DcMotor motorArm = null;
     public boolean redTeam;
     public boolean blueTeam;
     public boolean confirmation = false;
@@ -36,13 +39,19 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        motorBLeft = hardwareMap.get(DcMotor.class, "motorBLeft");
+        motorBRight = hardwareMap.get(DcMotor.class, "motorBRight");
         motorFLeft = hardwareMap.get(DcMotor.class, "motorFLeft");
         motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
 
         motorFLeft.setDirection(DcMotor.Direction.FORWARD);
         motorFRight.setDirection(DcMotor.Direction.REVERSE);
+        motorBLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
+        motorBRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
+        motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Initialized");    //
@@ -67,39 +76,63 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
         telemetry.update();
     }
 
+    //**ENCODER DRIVE**
     public void encoderDrive(double speed, double leftInches, double rightInches, double time) {
         int motorFLeftTarget;
         int motorFRightTarget;
+        int motorBLeftTarget;
+        int motorBRightTarget;
 
+        // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            motorFLeftTarget = motorFLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            motorFRightTarget = motorFRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            // Determine new target position, and pass to motor controller
+            motorFLeftTarget = motorFLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            motorFRightTarget = motorFRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            motorBLeftTarget = motorFLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            motorBRightTarget = motorFRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
             motorFLeft.setTargetPosition(motorFLeftTarget);
             motorFRight.setTargetPosition(motorFRightTarget);
+            motorBLeft.setTargetPosition(motorBLeftTarget);
+            motorBRight.setTargetPosition(motorBRightTarget);
 
+            // Turn On RUN_TO_POSITION
             motorFLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorFRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorBLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorBRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+            // reset the timeout time and start motion.
             runtime.reset();
             motorFLeft.setPower(speed);
             motorFRight.setPower(speed);
+            motorBLeft.setPower(speed);
+            motorBRight.setPower(speed);
 
-            while (opModeIsActive() && (runtime.seconds() < time) && (motorFLeft.isBusy() && motorFRight.isBusy())) {
+            while (opModeIsActive() && (runtime.seconds() < time) && (motorFLeft.isBusy() && motorFRight.isBusy() && motorFLeft.isBusy() && motorFRight.isBusy())) {
 
-                telemetry.addData("Path1", "Running to %7d :%7d", motorFLeftTarget, motorFRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", motorFLeftTarget,  motorFRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
                 telemetry.update();
             }
 
+            // Stop all motion;
             motorFLeft.setPower(0);
             motorFRight.setPower(0);
+            motorBLeft.setPower(0);
+            motorBRight.setPower(0);
 
+            // Turn off RUN_TO_POSITION
             motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
         }
-    }
+    } //**ENCODER DRIVE**
 
     public void jewelDrive() {
         colorServo.setPosition(0);
@@ -110,11 +143,11 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     public void pushRedJewel(double jewelInches) {
         //double jewelEquation = jewelInches / 2.54;
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(0.15, jewelInches, jewelInches, 1.5);
+            encoderDrive(DRIVE_SPEED, jewelInches, jewelInches, 1.5);
             parkOnCryptobox(30);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(0.15, -jewelInches, -jewelInches, 1.5);
+            encoderDrive(DRIVE_SPEED, -jewelInches, -jewelInches, 1.5);
             parkOnCryptobox(34);
         }
         else {
@@ -123,9 +156,12 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     }
 
     public void parkOnCryptobox(double distance) {
+        motorArm.setPower(0.4);
+        sleep(2000);
         colorServo.setPosition(1.0);
+        motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(0.15,  distance,  distance, 5.0);
+        encoderDrive(DRIVE_SPEED,  distance,  distance, 5.0);
     }
 }
 
