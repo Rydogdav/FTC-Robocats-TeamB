@@ -136,7 +136,7 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
     //**JEWEL DRIVE**
     public void jewelDrive() {  //Creates method named jewelDrive
         colorServo.setPosition(0.0);
-        sleep(1000);
+        sleep(6000);
         pushBlueJewel(4);
     } //**JEWEL DRIVE**
 
@@ -156,10 +156,11 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
     public void parkOnCryptobox(double distance) {
         motorArm.setPower(0.3);
         sleep(1000);
+        colorServo.setPosition(1.0);
+        sleep(1000);
         motorArm.setPower(-0.3);
         sleep(1000);
         motorArm.setPower(0.0);
-        colorServo.setPosition(1.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
     }

@@ -136,7 +136,7 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
 
     public void jewelDrive() {
         colorServo.setPosition(0);
-        sleep(1000);
+        sleep(6000);
         pushRedJewel(4);
     }
 
@@ -158,10 +158,11 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
     public void parkOnCryptobox(double distance) {
         motorArm.setPower(0.3);
         sleep(1000);
+        colorServo.setPosition(1.0);
+        sleep(1000);
         motorArm.setPower(-0.3);
         sleep(1000);
         motorArm.setPower(0.0);
-        colorServo.setPosition(1.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
     }
