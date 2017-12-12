@@ -89,8 +89,8 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
             // Determine new target position, and pass to motor controller
             motorFLeftTarget = motorFLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             motorFRightTarget = motorFRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            motorBLeftTarget = motorFLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            motorBRightTarget = motorFRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            motorBLeftTarget = motorBLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            motorBRightTarget = motorBRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
             motorFLeft.setTargetPosition(motorFLeftTarget);
             motorFRight.setTargetPosition(motorFRightTarget);
@@ -110,7 +110,7 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
             motorBLeft.setPower(speed);
             motorBRight.setPower(speed);
 
-            while (opModeIsActive() && (runtime.seconds() < time) && (motorFLeft.isBusy() && motorFRight.isBusy() && motorFLeft.isBusy() && motorFRight.isBusy())) {
+            while (opModeIsActive() && (runtime.seconds() < time) && (motorFLeft.isBusy() && motorFRight.isBusy() && motorBLeft.isBusy() && motorBRight.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", motorFLeftTarget,  motorFRightTarget);
@@ -157,9 +157,11 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
 
     public void parkOnCryptobox(double distance) {
         motorArm.setPower(0.3);
-        sleep(2000);
-        colorServo.setPosition(1.0);
+        sleep(1000);
+        motorArm.setPower(-0.3);
+        sleep(1000);
         motorArm.setPower(0.0);
+        colorServo.setPosition(1.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
     }
