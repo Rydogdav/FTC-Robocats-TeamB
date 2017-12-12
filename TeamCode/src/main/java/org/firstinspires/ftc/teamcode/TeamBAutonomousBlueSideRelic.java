@@ -19,7 +19,7 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double DRIVE_SPEED = 0.2;
+    static final double DRIVE_SPEED = 0.4;
     static final double TURN_SPEED = 0.5;
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
@@ -47,10 +47,10 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
         colorServo = hardwareMap.get(Servo.class, "colorServo");
         motorArm = hardwareMap.get(DcMotor.class, "motorArm");
 
-        motorFLeft.setDirection(DcMotor.Direction.FORWARD);
-        motorFRight.setDirection(DcMotor.Direction.REVERSE);
-        motorBLeft.setDirection(DcMotor.Direction.FORWARD); // sets direction to the left motor
-        motorBRight.setDirection(DcMotor.Direction.REVERSE); // sets direction to the left motor
+        motorFLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorFRight.setDirection(DcMotor.Direction.FORWARD);
+        motorBLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorBRight.setDirection(DcMotor.Direction.FORWARD);
         motorArm.setDirection(DcMotor.Direction.REVERSE);
 
         // Send telemetry message to signify robot waiting;
@@ -156,12 +156,12 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     }
 
     public void parkOnCryptobox(double distance) {
-        motorArm.setPower(0.4);
+        motorArm.setPower(0.3);
         sleep(2000);
         colorServo.setPosition(1.0);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  distance,  distance, 5.0);
+        encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
     }
 }
 
