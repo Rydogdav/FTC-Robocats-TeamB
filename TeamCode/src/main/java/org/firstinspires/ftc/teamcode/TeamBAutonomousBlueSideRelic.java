@@ -21,6 +21,7 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double DRIVE_SPEED = 0.4;
     static final double TURN_SPEED = 0.5;
+    static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
     public DcMotor motorBLeft = null; //set motors to nothing
@@ -28,6 +29,8 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
     public DcMotor motorArm = null;
+    public Servo servoArm = null;
+    public Servo servoArm2 = null;
     public boolean redTeam;
     public boolean blueTeam;
     public boolean confirmation = false;
@@ -46,6 +49,8 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
         motorArm = hardwareMap.get(DcMotor.class, "motorArm");
+        servoArm = hardwareMap.get(Servo.class, "servoArm");
+        servoArm2 = hardwareMap.get(Servo.class, "servoArm2");
 
         motorFLeft.setDirection(DcMotor.Direction.REVERSE);
         motorFRight.setDirection(DcMotor.Direction.FORWARD);
@@ -71,6 +76,8 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
         waitForStart();
 
         //servoControl.setServoPwmEnable(SERVO_PORT);
+        servoArm.setPosition(SERVO_DOWN);
+        servoArm2.setPosition(1.0 - SERVO_DOWN);
         jewelDrive();
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -160,7 +167,7 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
         sleep(1000);
         colorServo.setPosition(1.0);
         sleep(1000);
-        motorArm.setPower(-0.3);
+        motorArm.setPower(-0.1);
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);

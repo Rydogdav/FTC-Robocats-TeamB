@@ -21,6 +21,7 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.4;
     static final double     TURN_SPEED              = 0.5;
+    static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
     public DcMotor motorBLeft = null;
@@ -28,6 +29,8 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
     public DcMotor motorBRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
+    public Servo servoArm = null;
+    public Servo servoArm2 = null;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
 
@@ -41,6 +44,8 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        servoArm = hardwareMap.get(Servo.class, "servoArm");
+        servoArm2 = hardwareMap.get(Servo.class, "servoArm2");
 
         motorFLeft.setDirection(DcMotor.Direction.REVERSE);
         motorFRight.setDirection(DcMotor.Direction.FORWARD);
@@ -67,6 +72,8 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
+        servoArm.setPosition(SERVO_DOWN);
+        servoArm2.setPosition(1.0 - SERVO_DOWN);
         waitForStart();
 
         //servoControl.setServoPwmEnable(SERVO_PORT);
@@ -158,11 +165,11 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         sleep(1000);
         colorServo.setPosition(1.0);
         sleep(1000);
-        motorArm.setPower(-0.3);
+        motorArm.setPower(-0.1);
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
+        encoderDrive(DRIVE_SPEED,  -distance,  -distance, 3.5);
     }
 }
 
