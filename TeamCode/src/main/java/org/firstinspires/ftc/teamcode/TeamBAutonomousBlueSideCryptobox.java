@@ -144,25 +144,23 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
     public void jewelDrive() {
         colorServo.setPosition(0);
         sleep(6000);
-        pushRedJewel(4);
+        pushBlueJewel(4);
     }
 
-    public void pushRedJewel(double jewelInches) {
-        //double jewelEquation = jewelInches / 2.54;
+    public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(DRIVE_SPEED, jewelInches, jewelInches, 1.5);
-            parkOnCryptobox(30);
+            encoderDrive(DRIVE_SPEED,  jewelInches,  jewelInches, 1.5);
+            parkOnCryptobox(21, 2);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(DRIVE_SPEED, -jewelInches, -jewelInches, 1.5);
-            parkOnCryptobox(34);
+            encoderDrive(DRIVE_SPEED,  -jewelInches, -jewelInches, 1.5);
+            parkOnCryptobox(25, 2);
         }
         else {
-            parkOnCryptobox(32);
+            parkOnCryptobox(23, 2);
         }
     }
-
-    public void parkOnCryptobox(double distance) {
+    public void parkOnCryptobox(double distance, double turn) {
         motorArm.setPower(0.3);
         sleep(1000);
         colorServo.setPosition(1.0);
@@ -171,7 +169,9 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
+        encoderDrive(DRIVE_SPEED,  turn, -turn, 1.0);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED, distance, distance, 3.5);
     }
 }
 
