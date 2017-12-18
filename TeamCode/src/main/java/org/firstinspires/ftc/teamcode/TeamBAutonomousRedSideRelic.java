@@ -171,6 +171,10 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  -distance,  -distance, 3.5);
     }
+
+    public void placeGlyph(double rotation) {
+
+    }
 }
 
 
