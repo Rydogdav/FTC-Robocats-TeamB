@@ -21,9 +21,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 
 import java.lang.Math;
 
-@Autonomous(name="Autonomous RED CRYPTOBOX Alpha 1.0", group="Autonomous")
-@Disabled
-public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
+@Autonomous(name="RED RELIC 2.0", group="Autonomous")
+
+public class AutonomousRedSideRelic2_0 extends LinearOpMode{
 
     public ElapsedTime runtime = new ElapsedTime();
     static final double     COUNTS_PER_MOTOR_REV    = 1220 ;
@@ -37,10 +37,10 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
     public DcMotor motorBLeft = null;
+    public DcMotor motorArm = null;
     public DcMotor motorBRight = null;
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
-    public DcMotor motorArm = null;
     public Servo servoArm = null;
     public Servo servoArm2 = null;
     //public ServoControllerEx servoControl = null;
@@ -55,7 +55,6 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     public static VuforiaTrackable relicTemplate;
 
     public static RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
     @Override
     public void runOpMode() {
 
@@ -94,12 +93,13 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
+        servoArm.setPosition(SERVO_DOWN);
+        servoArm2.setPosition(1.0 - SERVO_DOWN);
         waitForStart();
 
         //servoControl.setServoPwmEnable(SERVO_PORT);
-        servoArm.setPosition(SERVO_DOWN);
-        servoArm2.setPosition(1.0 - SERVO_DOWN);
         jewelDrive();
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
@@ -198,24 +198,27 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     //**JEWEL DRIVE**
     public void jewelDrive() {  //Creates method named jewelDrive
         colorServo.setPosition(0.0);
-        sleep(4000);
+        sleep(6000);
         pushBlueJewel(4);
     } //**JEWEL DRIVE**
 
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            parkOnCryptobox(22, 2);
+            placeGlyph(24, 12, 2);
+            parkOnCryptobox(12);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            parkOnCryptobox(33, 2);
+            encoderDrive(DRIVE_SPEED,  jewelInches,  jewelInches, 1.5);
+            placeGlyph(22, 14, 2);
+            parkOnCryptobox(12);
         }
         else {
-            parkOnCryptobox(20, 2);
+            placeGlyph(23 , 13, 2);
+            parkOnCryptobox(12);
         }
     }
-    public void parkOnCryptobox(double distance, double turn) {
+    public void placeGlyph(double length, double distance, double rotation) {
         motorArm.setPower(0.3);
         sleep(1000);
         colorServo.setPosition(1.0);
@@ -224,22 +227,25 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  -turn, turn, 1.0);
-        sleep(1000);
-        encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
-    }
-    public void placeGlyph (double length, double rotation) {
+        encoderDrive(DRIVE_SPEED, length, length, 3.0);
         if (vuMark == RelicRecoveryVuMark.CENTER) {
-            encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
+            encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+            telemetry.addLine("Pictograph is CENTER.");
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            encoderDrive(DRIVE_SPEED, -5, -5, 3.0);
+            encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+            telemetry.addLine("Pictograph is RIGHT" +
+                    ".");
         }
         else if (vuMark == RelicRecoveryVuMark.LEFT) {
-            encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
+            encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+            telemetry.addLine("Pictograph is LEFT.");
+        }
+        else {
+            telemetry.addLine("Pictograph not read.");
         }
     }
+    public void parkOnCryptobox(double distance) {
+        encoderDrive(DRIVE_SPEED,  -distance,  -distance, 3.5);
+    }
 }
-
-
-

@@ -180,18 +180,21 @@ public class VuforiaTest extends LinearOpMode {
                     double rY = rot.secondAngle;
                     double rZ = rot.thirdAngle;
                 }
-                else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    encoderDrive(DRIVE_SPEED, 2, 2, 3.0);
-                }
-                else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    encoderDrive(DRIVE_SPEED, -2, -2, 3.0);
-                }
             }
             else {
                 telemetry.addData("VuMark", "not visible");
             }
+            if (vuMark == RelicRecoveryVuMark.CENTER) {
+                encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
+            }
+            else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                encoderDrive(DRIVE_SPEED, -5, -5, 3.0);
+            }
+            else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
+            }
 
-
+            telemetry.addLine("RIGHT!!!, RIGHT!!!");
             telemetry.update();
         }
 

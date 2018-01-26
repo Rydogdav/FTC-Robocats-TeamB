@@ -21,9 +21,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 
 import java.lang.Math;
 
-@Autonomous(name="Autonomous RED CRYPTOBOX Alpha 1.0", group="Autonomous")
-@Disabled
-public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
+@Autonomous(name="RED CRYPTOBOX 2.0", group="Autonomous")
+
+public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();
     static final double     COUNTS_PER_MOTOR_REV    = 1220 ;
@@ -205,14 +205,25 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            parkOnCryptobox(22, 2);
+            //parkOnCryptobox(22, 2);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            parkOnCryptobox(33, 2);
+            //parkOnCryptobox(33, 2);
         }
         else {
-            parkOnCryptobox(20, 2);
+            //parkOnCryptobox(20, 2);
+        }
+    }
+    public void placeGlyph (double length, double rotation) {
+        if (vuMark == RelicRecoveryVuMark.CENTER) {
+            encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
+        }
+        else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+            encoderDrive(DRIVE_SPEED, -5, -5, 3.0);
+        }
+        else if (vuMark == RelicRecoveryVuMark.LEFT) {
+            encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
         }
     }
     public void parkOnCryptobox(double distance, double turn) {
@@ -228,18 +239,4 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         sleep(1000);
         encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
     }
-    public void placeGlyph (double length, double rotation) {
-        if (vuMark == RelicRecoveryVuMark.CENTER) {
-            encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
-        }
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            encoderDrive(DRIVE_SPEED, -5, -5, 3.0);
-        }
-        else if (vuMark == RelicRecoveryVuMark.LEFT) {
-            encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
-        }
-    }
 }
-
-
-

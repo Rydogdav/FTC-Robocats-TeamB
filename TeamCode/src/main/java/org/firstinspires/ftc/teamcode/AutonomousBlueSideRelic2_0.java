@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -15,34 +16,40 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.lang.Math;
 
-@Autonomous(name="Autonomous RED CRYPTOBOX Alpha 1.0", group="Autonomous")
-@Disabled
-public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
+@Autonomous(name="BLUE RELIC 2.0", group="Autonomous")
+
+public class AutonomousBlueSideRelic2_0 extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();
-    static final double     COUNTS_PER_MOTOR_REV    = 1220 ;
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    static final double COUNTS_PER_MOTOR_REV = 1220;
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double     DRIVE_SPEED             = 0.4;
-    static final double     TURN_SPEED              = 0.5;
+    static final double DRIVE_SPEED = 0.4;
+    static final double TURN_SPEED = 0.5;
     static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
-    public DcMotor motorBLeft = null;
-    public DcMotor motorBRight = null;
+    public DcMotor motorBLeft = null; //set motors to nothing
+    public DcMotor motorBRight = null; //set motors to nothing
     public ColorSensor colorSensor = null;
     public Servo colorServo = null;
     public DcMotor motorArm = null;
     public Servo servoArm = null;
     public Servo servoArm2 = null;
+    public boolean redTeam;
+    public boolean blueTeam;
+    public boolean confirmation = false;
+    public String decision;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
 
@@ -59,13 +66,13 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        motorFLeft = hardwareMap.get(DcMotor.class, "motorFLeft");
-        motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
         motorBLeft = hardwareMap.get(DcMotor.class, "motorBLeft");
         motorBRight = hardwareMap.get(DcMotor.class, "motorBRight");
-        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
+        motorFLeft = hardwareMap.get(DcMotor.class, "motorFLeft");
+        motorFRight = hardwareMap.get(DcMotor.class, "motorFRight");
         colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        motorArm = hardwareMap.get(DcMotor.class, "motorArm");
         servoArm = hardwareMap.get(Servo.class, "servoArm");
         servoArm2 = hardwareMap.get(Servo.class, "servoArm2");
 
@@ -81,16 +88,12 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
 
         motorFLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
+        telemetry.addData("Path0", "Starting at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -100,6 +103,7 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         servoArm.setPosition(SERVO_DOWN);
         servoArm2.setPosition(1.0 - SERVO_DOWN);
         jewelDrive();
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
@@ -195,40 +199,27 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         }
     } //**ENCODER DRIVE**
 
-    //**JEWEL DRIVE**
-    public void jewelDrive() {  //Creates method named jewelDrive
-        colorServo.setPosition(0.0);
-        sleep(4000);
-        pushBlueJewel(4);
-    } //**JEWEL DRIVE**
+    public void jewelDrive() {
+        colorServo.setPosition(0);
+        sleep(6000);
+        pushRedJewel(4);
+    }
 
-    public void pushBlueJewel(double jewelInches) {
+    public void pushRedJewel(double jewelInches) {
+        //double jewelEquation = jewelInches / 2.54;
         if (colorSensor.red() > colorSensor.blue()) {
-            encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            parkOnCryptobox(22, 2);
+            encoderDrive(DRIVE_SPEED, jewelInches, jewelInches, 1.5);
+            //parkOnCryptobox(30);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            parkOnCryptobox(33, 2);
+            encoderDrive(DRIVE_SPEED, -jewelInches, -jewelInches, 1.5);
+            //parkOnCryptobox(34);
         }
         else {
-            parkOnCryptobox(20, 2);
+            //parkOnCryptobox(32);
         }
     }
-    public void parkOnCryptobox(double distance, double turn) {
-        motorArm.setPower(0.3);
-        sleep(1000);
-        colorServo.setPosition(1.0);
-        sleep(1000);
-        motorArm.setPower(-0.1);
-        sleep(1000);
-        motorArm.setPower(0.0);
-        sleep(1000);
-        encoderDrive(DRIVE_SPEED,  -turn, turn, 1.0);
-        sleep(1000);
-        encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
-    }
-    public void placeGlyph (double length, double rotation) {
+    public void placeGlyph(double length, double rotation) {
         if (vuMark == RelicRecoveryVuMark.CENTER) {
             encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
         }
@@ -239,7 +230,16 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
             encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
         }
     }
+    public void parkOnCryptobox(double distance) {
+        motorArm.setPower(0.3);
+        sleep(1000);
+        colorServo.setPosition(1.0);
+        sleep(1000);
+        motorArm.setPower(-0.1);
+        sleep(1000);
+        motorArm.setPower(0.0);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
+    }
 }
-
-
 
