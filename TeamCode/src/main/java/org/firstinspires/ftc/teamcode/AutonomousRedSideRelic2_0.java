@@ -234,8 +234,7 @@ public class AutonomousRedSideRelic2_0 extends LinearOpMode{
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT) {
             encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
-            telemetry.addLine("Pictograph is RIGHT" +
-                    ".");
+            telemetry.addLine("Pictograph is RIGHT.");
         }
         else if (vuMark == RelicRecoveryVuMark.LEFT) {
             encoderDrive(DRIVE_SPEED, distance, distance, 3.0);

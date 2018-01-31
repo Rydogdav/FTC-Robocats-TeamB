@@ -101,38 +101,6 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
         servoArm2.setPosition(1.0 - SERVO_DOWN);
         jewelDrive();
 
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-            telemetry.addData("VuMark", "%s visible", vuMark);
-
-                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
-                 * it is perhaps unlikely that you will actually need to act on this pose information, but
-                 * we illustrate it nevertheless, for completeness. */
-            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
-
-                /* We further illustrate how to decompose the pose into useful rotational and
-                 * translational components */
-            if (pose != null) {
-                VectorF trans = pose.getTranslation();
-                Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-
-                // Extract the X, Y, and Z components of the offset of the target relative to the robot
-                double tX = trans.get(0);
-                double tY = trans.get(1);
-                double tZ = trans.get(2);
-
-                // Extract the rotational components of the target relative to the robot
-                double rX = rot.firstAngle;
-                double rY = rot.secondAngle;
-                double rZ = rot.thirdAngle;
-            }
-        }
-        else {
-            telemetry.addData("VuMark", "not visible");
-        }
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -205,28 +173,21 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            //parkOnCryptobox(22, 2);
+            placeGlyph(24, 12, 2);
+            parkOnCryptobox(22, 2);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            //parkOnCryptobox(33, 2);
+            placeGlyph(22, 14, 2);
+            parkOnCryptobox(33, 2);
         }
         else {
-            //parkOnCryptobox(20, 2);
+            placeGlyph(23 , 13, 2);
+            parkOnCryptobox(20, 2);
         }
     }
-    public void placeGlyph (double length, double rotation) {
-        if (vuMark == RelicRecoveryVuMark.CENTER) {
-            encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
-        }
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            encoderDrive(DRIVE_SPEED, -5, -5, 3.0);
-        }
-        else if (vuMark == RelicRecoveryVuMark.LEFT) {
-            encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
-        }
-    }
-    public void parkOnCryptobox(double distance, double turn) {
+    public void placeGlyph(double length, double distance, double rotation) {
+        boolean var = false;
         motorArm.setPower(0.3);
         sleep(1000);
         colorServo.setPosition(1.0);
@@ -235,8 +196,62 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  -turn, turn, 1.0);
-        sleep(1000);
+        encoderDrive(DRIVE_SPEED, -4, -4, 1.5);
+        for (int i = 0; i < 5; i++) {
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+                /* Found an instance of the template. In the actual game, you will probably
+                 * loop until this condition occurs, then move on to act accordingly depending
+                 * on which VuMark was visible. */
+                telemetry.addData("VuMark", "%s visible", vuMark);
+
+                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
+                 * it is perhaps unlikely that you will actually need to act on this pose information, but
+                 * we illustrate it nevertheless, for completeness. */
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
+
+                /* We further illustrate how to decompose the pose into useful rotational and
+                 * translational components */
+                if (pose != null) {
+                    VectorF trans = pose.getTranslation();
+                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+                    // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                    double tX = trans.get(0);
+                    double tY = trans.get(1);
+                    double tZ = trans.get(2);
+
+                    // Extract the rotational components of the target relative to the robot
+                    double rX = rot.firstAngle;
+                    double rY = rot.secondAngle;
+                    double rZ = rot.thirdAngle;
+                    if (vuMark == RelicRecoveryVuMark.CENTER) {
+                        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+                        telemetry.addLine("Pictograph is CENTER.");
+                        //var = true;
+                        i = 5;
+                    } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+                        telemetry.addLine("Pictograph is RIGHT.");
+                        //var = true;
+                        i = 5;
+                    } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+                        telemetry.addLine("Pictograph is LEFT.");
+                        //var = true;
+                        i = 5;
+                    } else {
+                        telemetry.addLine("Pictograph not read.");
+                        sleep(1000);
+                    }
+                }
+                encoderDrive(DRIVE_SPEED, -rotation, rotation, 2.0);
+            } else {
+                telemetry.addData("VuMark", "not visible");
+            }
+        }
+    }
+    public void parkOnCryptobox(double distance, double turn) {
         encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
     }
 }

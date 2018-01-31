@@ -31,7 +31,7 @@ public class TeamBTeleOpGlyph extends LinearOpMode {
     public Servo servoArm2 = null;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
-    static final double SERVO_UP = 0.9; // ** OPEN **
+    static final double SERVO_UP = 0.80; // ** OPEN **
     static final double SERVO_DOWN = 0.50; // ** CLOSED **
     static final double SERVO_HALF = 0.65; // ** HALF **
     public Servo colorServo = null;
