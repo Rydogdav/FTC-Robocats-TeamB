@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.lang.Math;
 
@@ -68,6 +70,23 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
         colorServo = hardwareMap.get(Servo.class, "colorServo");
         servoArm = hardwareMap.get(Servo.class, "servoArm");
         servoArm2 = hardwareMap.get(Servo.class, "servoArm2");
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "AW7cBtn/////AAAAGYMkfBwkBk+RtHulA/YtafKMtOkKRJGL0" +
+                "uSzzGVGQDzIzhkvOQY4lJnPIwwP7MBF5k8AKuhF0QwYx4nlBgTOlMv23OSHNfvy9tE0Egigzp" +
+                "bi7p0zUS3bgP9XPd8IsdyQQhwdQQFY64eZiNxqstMPQqOhCyZ+MuQjWWiW1gAeGaPNxD8sUUS" +
+                "FbcP0F0LfTWY8JYNFDjr7vUfB8koqwsWCYrB8gQH9ZAwVRDQlHbpx4z1ZEySLnDCRXX0Ns4R1" +
+                "PktDJeHJq4Xj0wInNVNPLwCSXaw/yLDkPGa+IWws63uWwr3h4TaxJEs4zgqqbTyCVDPgeAtjm" +
+                "wT6KCrrlsS6kW1czPF8bNWq4U5BdinbKBZGrKS7";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); //can help in debugging; otherwise not necessary
 
         motorFLeft.setDirection(DcMotor.Direction.REVERSE);
         motorFRight.setDirection(DcMotor.Direction.FORWARD);
@@ -173,20 +192,20 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            placeGlyph(24, 12, 2);
+            placeGlyph(12, 2);
             parkOnCryptobox(22, 2);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            placeGlyph(22, 14, 2);
+            placeGlyph(14, 2);
             parkOnCryptobox(33, 2);
         }
         else {
-            placeGlyph(23 , 13, 2);
+            placeGlyph(13, 2);
             parkOnCryptobox(20, 2);
         }
     }
-    public void placeGlyph(double length, double distance, double rotation) {
+    public void placeGlyph(double distance, double turn) {
         boolean var = false;
         motorArm.setPower(0.3);
         sleep(1000);
@@ -197,59 +216,53 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
         motorArm.setPower(0.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED, -4, -4, 1.5);
-        for (int i = 0; i < 5; i++) {
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
-                telemetry.addData("VuMark", "%s visible", vuMark);
+            telemetry.addData("VuMark", "%s visible", vuMark);
 
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
+            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
 
                 /* We further illustrate how to decompose the pose into useful rotational and
                  * translational components */
-                if (pose != null) {
-                    VectorF trans = pose.getTranslation();
-                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+            if (pose != null) {
+                VectorF trans = pose.getTranslation();
+                Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
 
-                    // Extract the X, Y, and Z components of the offset of the target relative to the robot
-                    double tX = trans.get(0);
-                    double tY = trans.get(1);
-                    double tZ = trans.get(2);
+                // Extract the X, Y, and Z components of the offset of the target relative to the robot
+                double tX = trans.get(0);
+                double tY = trans.get(1);
+                double tZ = trans.get(2);
 
-                    // Extract the rotational components of the target relative to the robot
-                    double rX = rot.firstAngle;
-                    double rY = rot.secondAngle;
-                    double rZ = rot.thirdAngle;
-                    if (vuMark == RelicRecoveryVuMark.CENTER) {
-                        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
-                        telemetry.addLine("Pictograph is CENTER.");
-                        //var = true;
-                        i = 5;
-                    } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
-                        telemetry.addLine("Pictograph is RIGHT.");
-                        //var = true;
-                        i = 5;
-                    } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
-                        telemetry.addLine("Pictograph is LEFT.");
-                        //var = true;
-                        i = 5;
-                    } else {
-                        telemetry.addLine("Pictograph not read.");
-                        sleep(1000);
-                    }
-                }
-                encoderDrive(DRIVE_SPEED, -rotation, rotation, 2.0);
-            } else {
-                telemetry.addData("VuMark", "not visible");
+                // Extract the rotational components of the target relative to the robot
+                double rX = rot.firstAngle;
+                double rY = rot.secondAngle;
+                double rZ = rot.thirdAngle;
             }
         }
+        else {
+            telemetry.addData("VuMark", "not visible");
+        }
+        if (vuMark == RelicRecoveryVuMark.CENTER) {
+            telemetry.addLine("CENTER");
+            encoderDrive(0.3, -turn, turn, 1.5);
+        }
+        else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+            telemetry.addLine("RIGHT!!!, RIGHT!!!");
+            encoderDrive(0.3, -turn, turn, 1.5);
+        }
+        else if (vuMark == RelicRecoveryVuMark.LEFT) {
+            telemetry.addLine("LEFT");
+            encoderDrive(0.3, -turn, turn, 1.5);
+        }
+
+        telemetry.addLine("RIGHT!!!, RIGHT!!!");
+        telemetry.update();
     }
     public void parkOnCryptobox(double distance, double turn) {
         encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
