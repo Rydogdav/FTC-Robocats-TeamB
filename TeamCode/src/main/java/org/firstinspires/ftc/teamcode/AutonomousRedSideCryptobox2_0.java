@@ -192,16 +192,15 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            placeGlyph(12, 2);
+            placeGlyph(8, 2);
             parkOnCryptobox(22, 2);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            placeGlyph(14, 2);
+            placeGlyph(0, 2);
             parkOnCryptobox(33, 2);
         }
         else {
-            placeGlyph(13, 2);
             parkOnCryptobox(20, 2);
         }
     }
@@ -215,7 +214,7 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED, -4, -4, 1.5);
+        encoderDrive(DRIVE_SPEED, -distance, -distance, 1.5);
         if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
                 /* Found an instance of the template. In the actual game, you will probably
