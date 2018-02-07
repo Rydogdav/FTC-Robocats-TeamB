@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.lang.Math;
 
 @Autonomous(name="RED CRYPTOBOX 2.0", group="Autonomous")
-
+@Disabled
 public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();
@@ -35,6 +35,7 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.4;
     static final double     TURN_SPEED              = 0.5;
+    static final double SERVO_UP = 0.80; // ** OPEN **
     static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
@@ -183,6 +184,7 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
     } //**ENCODER DRIVE**
 
     //**JEWEL DRIVE**
+    int count = 0;
     public void jewelDrive() {  //Creates method named jewelDrive
         colorServo.setPosition(0.0);
         sleep(4000);
@@ -192,16 +194,18 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            placeGlyph(8, 2);
-            parkOnCryptobox(22, 2);
+            count += 1;
+            placeGlyph(8, 4);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
-            encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            placeGlyph(0, 2);
-            parkOnCryptobox(33, 2);
+            encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5); //1.1
+            count += 2;
+            placeGlyph(0, 4);
         }
         else {
-            parkOnCryptobox(20, 2);
+            count += 3;
+            placeGlyph(4, 4);
+
         }
     }
     public void placeGlyph(double distance, double turn) {
@@ -247,23 +251,30 @@ public class AutonomousRedSideCryptobox2_0 extends LinearOpMode {
         else {
             telemetry.addData("VuMark", "not visible");
         }
+        sleep(2000);
+
         if (vuMark == RelicRecoveryVuMark.CENTER) {
             telemetry.addLine("CENTER");
-            encoderDrive(0.3, -turn, turn, 1.5);
+            encoderDrive(0.3, turn, -turn, 1.5);
+            parkOnCryptobox(20);
         }
         else if (vuMark == RelicRecoveryVuMark.RIGHT) {
             telemetry.addLine("RIGHT!!!, RIGHT!!!");
-            encoderDrive(0.3, -turn, turn, 1.5);
+            encoderDrive(0.3, turn + 1, -turn - 1, 1.5);
+            parkOnCryptobox(20);
         }
         else if (vuMark == RelicRecoveryVuMark.LEFT) {
             telemetry.addLine("LEFT");
-            encoderDrive(0.3, -turn, turn, 1.5);
+            encoderDrive(0.3, turn - 1, -turn + 1, 1.5);
+            parkOnCryptobox(20);
         }
 
         telemetry.addLine("RIGHT!!!, RIGHT!!!");
         telemetry.update();
     }
-    public void parkOnCryptobox(double distance, double turn) {
+    public void parkOnCryptobox(double distance) {
         encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
+        servoArm.setPosition(SERVO_UP);
+        servoArm.setPosition(1.0 - SERVO_UP);
     }
 }

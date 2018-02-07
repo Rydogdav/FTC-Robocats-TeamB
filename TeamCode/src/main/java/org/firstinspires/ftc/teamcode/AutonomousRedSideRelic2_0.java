@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import java.lang.Math;
 
 @Autonomous(name="RED RELIC 2.0", group="Autonomous")
-
+@Disabled
 public class AutonomousRedSideRelic2_0 extends LinearOpMode{
 
     public ElapsedTime runtime = new ElapsedTime();

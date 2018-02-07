@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import java.lang.Math;
 
 @Autonomous(name="Autonomous BLUE CRYPTOBOX Alpha 1.0", group="Autonomous")
-
+@Disabled
 public class AutonomousBlueSideCryptobox2_0 extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();

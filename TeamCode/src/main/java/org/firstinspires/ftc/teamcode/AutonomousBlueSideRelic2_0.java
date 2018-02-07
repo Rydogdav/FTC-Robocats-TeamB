@@ -25,7 +25,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.lang.Math;
 
 @Autonomous(name="BLUE RELIC 2.0", group="Autonomous")
-
+@Disabled
 public class AutonomousBlueSideRelic2_0 extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();

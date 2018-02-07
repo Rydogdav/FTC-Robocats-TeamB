@@ -21,8 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 
 import java.lang.Math;
 
-@Autonomous(name="Autonomous RED CRYPTOBOX Alpha 1.0", group="Autonomous")
-@Disabled
+@Autonomous(name="RED CRYPTOBOX", group="Autonomous")
+
 public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
 
     public ElapsedTime runtime = new ElapsedTime();
@@ -45,16 +45,6 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     public Servo servoArm2 = null;
     //public ServoControllerEx servoControl = null;
     public final int SERVO_PORT = 2;
-
-    public static final String TAG = "Vuforia VuMark Sample";
-
-    OpenGLMatrix lastLocation = null;
-
-    VuforiaLocalizer vuforia;
-
-    public static VuforiaTrackable relicTemplate;
-
-    public static RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
     @Override
     public void runOpMode() {
@@ -100,39 +90,6 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         servoArm.setPosition(SERVO_DOWN);
         servoArm2.setPosition(1.0 - SERVO_DOWN);
         jewelDrive();
-
-        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-            telemetry.addData("VuMark", "%s visible", vuMark);
-
-                /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
-                 * it is perhaps unlikely that you will actually need to act on this pose information, but
-                 * we illustrate it nevertheless, for completeness. */
-            OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
-
-                /* We further illustrate how to decompose the pose into useful rotational and
-                 * translational components */
-            if (pose != null) {
-                VectorF trans = pose.getTranslation();
-                Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-
-                // Extract the X, Y, and Z components of the offset of the target relative to the robot
-                double tX = trans.get(0);
-                double tY = trans.get(1);
-                double tZ = trans.get(2);
-
-                // Extract the rotational components of the target relative to the robot
-                double rX = rot.firstAngle;
-                double rY = rot.secondAngle;
-                double rZ = rot.thirdAngle;
-            }
-        }
-        else {
-            telemetry.addData("VuMark", "not visible");
-        }
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -229,15 +186,7 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
     }
     public void placeGlyph (double length, double rotation) {
-        if (vuMark == RelicRecoveryVuMark.CENTER) {
-            encoderDrive(DRIVE_SPEED, 5, 5, 3.0);
-        }
-        else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-            encoderDrive(DRIVE_SPEED, -5, -5, 3.0);
-        }
-        else if (vuMark == RelicRecoveryVuMark.LEFT) {
-            encoderDrive(DRIVE_SPEED, 5, -5, 3.0);
-        }
+
     }
 }
 
