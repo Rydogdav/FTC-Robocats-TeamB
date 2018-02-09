@@ -182,16 +182,17 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
+        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED,  turn, -turn, 1.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
         placeGlyph(5);
     }
-    public void placeGlyph (double length) {
+    public void placeGlyph(double length) {
+        motorArm.setPower(0.0);
         servoArm.setPosition(SERVO_UP);
         servoArm2.setPosition(1.0 - SERVO_UP);
         sleep(2000);
-        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED, -length, -length, 3.0);
         sleep(1000);
         motorArm.setPower(0.0);

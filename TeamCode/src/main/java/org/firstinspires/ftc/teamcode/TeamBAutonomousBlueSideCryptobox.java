@@ -190,6 +190,7 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0); //
         sleep(1000);
+        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED,  turn, -turn, 1.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED, distance, distance, 3.5);
@@ -200,7 +201,6 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
         servoArm.setPosition(SERVO_UP);
         servoArm2.setPosition(1.0 - SERVO_UP);
         sleep(2000);
-        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED, -length, -length, 3.0);
         sleep(1000);
         motorArm.setPower(0.0);

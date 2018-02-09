@@ -187,18 +187,21 @@ public class TeamBAutonomousBlueSideRelic extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
+        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED,  distance,  distance, 3.5);
         placeGlyph(5, 4);
     }
 
     public void placeGlyph(double length, double rotation) {
+        encoderDrive(DRIVE_SPEED, rotation, -rotation, 1.5);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED, length, length, 1.5);
+        sleep(1000);
+        motorArm.setPower(0.0);
         servoArm.setPosition(SERVO_UP);
         servoArm2.setPosition(1.0 - SERVO_UP);
         sleep(2000);
-        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED, -length, -length, 3.0);
-        sleep(1000);
-        encoderDrive(DRIVE_SPEED, rotation, -rotation, 1.5);
         sleep(1000);
         motorArm.setPower(0.0);
         servoArm.setPosition(SERVO_DOWN);

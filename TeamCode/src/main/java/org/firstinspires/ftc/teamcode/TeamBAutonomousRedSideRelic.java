@@ -182,12 +182,12 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
+        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED,  -distance,  -distance, 3.5);
         placeGlyph(5, 10);
     }
 
     public void placeGlyph(double length, double rotation) {
-        motorArm.setPower(0.15);
         encoderDrive(DRIVE_SPEED, -rotation, rotation, 1.5);
         sleep(1000);
         encoderDrive(DRIVE_SPEED, 10, 10, 3.0);
