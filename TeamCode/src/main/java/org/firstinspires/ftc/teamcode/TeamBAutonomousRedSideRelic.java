@@ -33,6 +33,7 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.4;
     static final double     TURN_SPEED              = 0.5;
+    static final double SERVO_UP = 0.80; // ** OPEN **
     static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
@@ -182,10 +183,23 @@ public class TeamBAutonomousRedSideRelic extends LinearOpMode{
         motorArm.setPower(0.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  -distance,  -distance, 3.5);
+        placeGlyph(5, 10);
     }
 
     public void placeGlyph(double length, double rotation) {
-
+        motorArm.setPower(0.15);
+        encoderDrive(DRIVE_SPEED, -rotation, rotation, 1.5);
+        sleep(1000);
+        encoderDrive(DRIVE_SPEED, 10, 10, 3.0);
+        sleep(1000);
+        servoArm.setPosition(SERVO_UP);
+        servoArm2.setPosition(1.0 - SERVO_UP);
+        motorArm.setPower(0.0);
+        sleep(1000);
+        servoArm.setPosition(SERVO_DOWN);
+        servoArm2.setPosition(1.0 - SERVO_DOWN);
+        encoderDrive(DRIVE_SPEED, -length, -length, 3.0);
+        sleep(1000);
     }
 }
 

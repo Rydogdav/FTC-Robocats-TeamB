@@ -34,6 +34,7 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double DRIVE_SPEED = 0.4;
     static final double TURN_SPEED = 0.5;
+    static final double SERVO_UP = 0.80; // ** OPEN **
     static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
@@ -76,9 +77,13 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
 
         motorFLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d", motorFLeft.getCurrentPosition(), motorFRight.getCurrentPosition());
@@ -104,6 +109,16 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
+            motorFLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorFRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorBRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            // Turn off RUN_TO_POSITION
+            motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             // Determine new target position, and pass to motor controller
             motorFLeftTarget = motorFLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
@@ -143,12 +158,6 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
             motorBLeft.setPower(0);
             motorBRight.setPower(0);
 
-            // Turn off RUN_TO_POSITION
-            motorFLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorFRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
             //  sleep(250);   // optional pause after each move
         }
     } //**ENCODER DRIVE**
@@ -162,32 +171,41 @@ public class TeamBAutonomousBlueSideCryptobox extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  jewelInches,  jewelInches, 1.5);
-            parkOnCryptobox(21, 2);
+            parkOnCryptobox(36, 4);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches, -jewelInches, 1.5);
-            parkOnCryptobox(25, 2);
+            parkOnCryptobox(40, 3);
         }
         else {
-            parkOnCryptobox(23, 2);
+            parkOnCryptobox(33, 4);
         }
     }
     public void parkOnCryptobox(double distance, double turn) {
         motorArm.setPower(0.3);
         sleep(1000);
         colorServo.setPosition(1.0);
-        sleep(1000);
+        sleep(1500);
         motorArm.setPower(-0.1);
         sleep(1000);
-        motorArm.setPower(0.0);
+        motorArm.setPower(0.0); //
         sleep(1000);
         encoderDrive(DRIVE_SPEED,  turn, -turn, 1.0);
         sleep(1000);
         encoderDrive(DRIVE_SPEED, distance, distance, 3.5);
+        placeGlyph(5);
     }
 
-    public void placeGlyph(double length, double rotation) {
-
+    public void placeGlyph(double length) {
+        servoArm.setPosition(SERVO_UP);
+        servoArm2.setPosition(1.0 - SERVO_UP);
+        sleep(2000);
+        motorArm.setPower(0.15);
+        encoderDrive(DRIVE_SPEED, -length, -length, 3.0);
+        sleep(1000);
+        motorArm.setPower(0.0);
+        servoArm.setPosition(SERVO_DOWN);
+        servoArm2.setPosition(1.0 - SERVO_DOWN);
     }
 }
 

@@ -33,6 +33,7 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double     DRIVE_SPEED             = 0.4;
     static final double     TURN_SPEED              = 0.5;
+    static final double SERVO_UP = 0.80; // ** OPEN **
     static final double SERVO_DOWN = 0.50; // ** CLOSED **
     public DcMotor motorFLeft = null;
     public DcMotor motorFRight = null;
@@ -162,14 +163,14 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
     public void pushBlueJewel(double jewelInches) {
         if (colorSensor.red() > colorSensor.blue()) {
             encoderDrive(DRIVE_SPEED,  -jewelInches,  -jewelInches, 1.5);
-            parkOnCryptobox(22, 2);
+            parkOnCryptobox(22, 16);
         }
         else if (colorSensor.blue() > colorSensor.red()) {
             encoderDrive(DRIVE_SPEED,  jewelInches, jewelInches, 1.5);
-            parkOnCryptobox(33, 2);
+            parkOnCryptobox(33, 16);
         }
         else {
-            parkOnCryptobox(20, 2);
+            parkOnCryptobox(20, 16);
         }
     }
     public void parkOnCryptobox(double distance, double turn) {
@@ -181,12 +182,21 @@ public class TeamBAutonomousRedSideCryptobox extends LinearOpMode {
         sleep(1000);
         motorArm.setPower(0.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED,  -turn, turn, 1.0);
+        encoderDrive(DRIVE_SPEED,  turn, -turn, 1.0);
         sleep(1000);
-        encoderDrive(DRIVE_SPEED, -distance, -distance, 3.0);
+        encoderDrive(DRIVE_SPEED, distance, distance, 3.0);
+        placeGlyph(5);
     }
-    public void placeGlyph (double length, double rotation) {
-
+    public void placeGlyph (double length) {
+        servoArm.setPosition(SERVO_UP);
+        servoArm2.setPosition(1.0 - SERVO_UP);
+        sleep(2000);
+        motorArm.setPower(0.15);
+        encoderDrive(DRIVE_SPEED, -length, -length, 3.0);
+        sleep(1000);
+        motorArm.setPower(0.0);
+        servoArm.setPosition(SERVO_DOWN);
+        servoArm2.setPosition(1.0 - SERVO_DOWN);
     }
 }
 
